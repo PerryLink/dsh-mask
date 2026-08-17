@@ -1,6 +1,6 @@
-# dsh-mask
-
 <div align="center">
+
+# dsh-mask
 
 **Middleware de enmascaramiento de PII para DeepSeek Harness: anonimiza los datos personales antes de que lleguen al modelo y los restaura en la capa de visualización.**
 

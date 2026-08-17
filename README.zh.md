@@ -1,6 +1,6 @@
-# dsh-mask
-
 <div align="center">
+
+# dsh-mask
 
 **面向 DeepSeek Harness 的 PII 脱敏中间件——在个人数据进入模型前匿名化，在展示层还原。**
 

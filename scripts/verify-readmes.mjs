@@ -20,7 +20,7 @@ for (const file of FILES) {
   }
   const text = readFileSync(filePath, 'utf8')
   const checks = [
-    ['title', text.startsWith('# dsh-mask')],
+    ['title', text.includes('# dsh-mask')],
     ['switcher', text.includes(SWITCHER)],
     ['topic dsh', /`dsh`/.test(text)],
     ['topic dsh-plugin', /`dsh-plugin`/.test(text)],
