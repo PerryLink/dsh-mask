@@ -1,0 +1,6 @@
+# Nearest-workspace root for this standalone plugin package. This file makes
+# pnpm treat dsh-mask as an independent workspace when the repository is
+# checked out inside another pnpm workspace, such as a deepseek-harness
+# checkout (which is where this repo lives during development).
+packages:
+  - .

@@ -1,0 +1,41 @@
+# dsh-mask bundle patch: mount the mask plugin.
+#
+# Every key below is a Config field (Schemastery schema); invalid values fail
+# the profile load loudly. See README.md "Configuration" for the full table.
+- insert:
+    - id: mask
+      name: dsh-mask
+      config:
+        # Master switch; false unregisters the pre-step listener, the /mask
+        # command, and the mask_test tool.
+        enabled: true
+        # Detection mode. Only 'regex' is implemented (zero-dependency pure
+        # regex). 'regex+ner' is reserved for an external name/address
+        # recognizer and fails loud at load until one is wired in.
+        mode: regex
+        # Which entity types to mask. 'phone', 'email', 'id-card',
+        # 'bank-card', and 'key' are regex-capable; 'ip' is regex-capable but
+        # opt-in (frequent false positives in technical context); 'person' and
+        # 'address' require NER (mode: regex+ner) and fail loud here.
+        entities:
+          - phone
+          - email
+          - id-card
+          - bank-card
+          - key
+        # Masking surface. Only 'messages' (mask agent/pre-step messages before
+        # they enter the model) is implemented; 'tools' (mask tool arguments) is
+        # reserved and fails loud at load.
+        scope: messages
+        # Surface switches: register the /mask command and the mask_test tool.
+        registerCommand: true
+        registerTools: true
+        # Persist the placeholder->original restore table to the controlled
+        # dsh_mask storage domain (false = memory only, lost on restart).
+        persistRestoreTable: true
+        # Per-session cap on restore entries; the oldest placeholders are
+        # evicted first (their responses can no longer be restored).
+        maxRestoreEntriesPerSession: 500
+        # Cap on in-memory session strippers; least-recently-used sessions are
+        # evicted (mapping reloads from the storage domain on demand).
+        maxSessions: 1000

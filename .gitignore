@@ -1,0 +1,8 @@
+node_modules/
+dev/
+*.tgz
+*.tmp
+.rc6-check/
+# upstream/ is a read-only reference clone (see AGENTS.md); it is not part of
+# this repository and must never be committed or published.
+upstream/

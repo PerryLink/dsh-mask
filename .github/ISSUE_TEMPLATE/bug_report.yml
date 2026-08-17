@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a bug in dsh-mask
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: The dsh-mask version (`npm ls dsh-mask`, or the git ref you installed).
+      placeholder: '0.1.0'
+    validations:
+      required: true
+  - type: input
+    id: harness-version
+    attributes:
+      label: Harness version
+      description: The DeepSeek Harness version (`dsh --version`).
+      placeholder: '0.1.0-rc.6'
+    validations:
+      required: true
+  - type: input
+    id: os-node
+    attributes:
+      label: OS and Node versions
+      description: Operating system and Node.js version (`node --version`).
+      placeholder: 'Windows 11, Node v22.22.3'
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps that trigger the bug, including the /mask command or mask_test tool call used, and the PII type(s) involved.
+      placeholder: |
+        1. Mount dsh-mask with entities: [phone, email] ...
+        2. Send a message containing ... / run mask_test ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead (error messages, command output).
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: Relevant /mask output or stack traces (sanitized — never paste real PII).
+      value: |
+        > **⚠️ Before pasting: redact everything sensitive.**
+        > Logs must NOT contain tokens, API keys, secrets, Authorization or
+        > other request headers, personal paths, or account identifiers.
+        > Replace any real phone numbers, emails, ID cards, bank cards, or
+        > keys with placeholders (e.g. <PHONE_1>) before pasting.
+    validations:
+      required: false
