@@ -9,8 +9,9 @@ logic) is ported from:
 - **Pii-Stripper-Middleware** — https://github.com/PerryLink/Pii-Stripper-Middleware
 
 License status of the source: the project's asset inventory recorded the upstream
-as `NOASSERTION` at clone time; the cloned `upstream/Pii-Stripper-Middleware/LICENSE`
-now carries an Apache-2.0 notice (`Copyright 2026 Chance Dean (novelnexusai@outlook.com)`).
+as `NOASSERTION` at clone time; the upstream repository now carries the canonical
+Apache-2.0 LICENSE (`Copyright 2026 PerryLink`), which is what this port follows.
+The local `upstream/` reference clone may still hold the pre-fix file until refreshed.
 The `upstream/` directory is a read-only reference clone kept only for the port and
 is gitignored — it is not part of this repository and is not published.
 
