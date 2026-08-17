@@ -142,6 +142,29 @@ Sin paso de build: ESM puro, `index.mjs` y `lib/` son los artefactos enviados.
 
 - [@PerryLink](https://github.com/PerryLink) — creador y mantenedor.
 
+## PerryLink DSH Plugin Family
+
+Este proyecto es uno de los [plugins de DeepSeek Harness](https://github.com/PerryLink) mantenidos por [PerryLink](https://github.com/PerryLink). Si este te ayuda, los demás probablemente también:
+
+| Plugin | En una línea |
+|---|---|
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | Middleware de enmascaramiento de PII: anonimiza en el límite del modelo, restaura en la capa de visualización |
+| [dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel) | Panel MCP de solo lectura: comando /mcp + pestaña de ajustes con estado, herramientas y errores |
+| [dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck) | Guardia de disciplina de ingeniería: interrogatorio de requisitos, puertas de pruebas, revisión adversaria |
+| [dsh-background-agents](https://github.com/PerryLink/dsh-background-agents) | Agentes hijos en segundo plano con barra lateral web, mensajería e interrupción |
+| [dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions) | Diagnóstico, formato, autocompletado, acciones de código y renombrado LSP |
+| [dsh-output-styles](https://github.com/PerryLink/dsh-output-styles) | Cambio de estilo en tiempo de ejecución equivalente a outputStyles de Claude Code |
+| [dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind) | Equivalente a /rewind de Claude Code: snapshots, forks de sesión, restauración de un clic |
+| [dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules) | Reglas de permisos declarativas allow/deny/ask estilo Claude Code, con auditoría |
+| [dsh-auto-review](https://github.com/PerryLink/dsh-auto-review) | Autorrevisión de segundo modelo en la cadena de aprobación, fail-closed por defecto |
+| [dsh-memento](https://github.com/PerryLink/dsh-memento) | Memoria entre sesiones con aprobación: seam ctx.memory + SQLite + herramienta memory |
+| [dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security) | Paquete de skills de auditoría de seguridad: escaneo de secretos, revisión de dependencias y cadena de suministro |
+| [dsh-session-pin](https://github.com/PerryLink/dsh-session-pin) | Fija sesiones en la barra lateral web con orden duradero |
+| [dsh-composer-history](https://github.com/PerryLink/dsh-composer-history) | Historial de entrada estilo terminal para el compositor web: flechas, búsqueda Ctrl+R |
+| [dsh-github](https://github.com/PerryLink/dsh-github) | Integración de PR/issues de GitHub para DSH, toda escritura con aprobación |
+| [dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide) | Base de conocimiento de desarrollo de plugins como skill de agente bajo demanda |
+| [dsh-claude-move](https://github.com/PerryLink/dsh-claude-move) | Migra sesiones, memoria, skills y CLAUDE.md de Claude Code a DSH |
+
 ## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors

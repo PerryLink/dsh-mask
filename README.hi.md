@@ -142,6 +142,29 @@ pnpm pack
 
 - [@PerryLink](https://github.com/PerryLink) — निर्माता और अनुरक्षक।
 
+## PerryLink DSH Plugin Family
+
+यह परियोजना [PerryLink](https://github.com/PerryLink) द्वारा अनुरक्षित [DeepSeek Harness प्लगइनों](https://github.com/PerryLink) में से एक है। अगर यह आपकी मदद करता है, तो बाकी भी संभवतः करेंगे:
+
+| प्लगइन | एक पंक्ति में |
+|---|---|
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII मास्किंग मिडलवेयर: मॉडल सीमा पर अनाम करें, डिस्प्ले लेयर पर पुनर्स्थापित करें |
+| [dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel) | रीड-ओनली MCP रनटाइम पैनल: /mcp कमांड + सेटिंग्स टैब, स्थिति/टूल/त्रुटियाँ |
+| [dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck) | इंजीनियरिंग-अनुशासन गार्ड: आवश्यकता पूछताछ, टेस्ट गेट, विरोधी समीक्षा |
+| [dsh-background-agents](https://github.com/PerryLink/dsh-background-agents) | टिकाऊ पृष्ठभूमि चाइल्ड एजेंट: वेब साइडबार, संदेश और व्यवधान |
+| [dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions) | LSP निदान, फ़ॉर्मेटिंग, पूर्णता, कोड क्रियाएँ और नाम बदलना |
+| [dsh-output-styles](https://github.com/PerryLink/dsh-output-styles) | Claude Code outputStyles-समकक्ष रनटाइम शैली बदलाव |
+| [dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind) | Claude Code /rewind-समकक्ष: स्नैपशॉट, सत्र fork, एक-क्लिक पुनर्स्थापना |
+| [dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules) | Claude Code-शैली घोषणात्मक allow/deny/ask अनुमति नियम, ऑडिट सहित |
+| [dsh-auto-review](https://github.com/PerryLink/dsh-auto-review) | अनुमोदन श्रृंखला पर दूसरे मॉडल की स्वतः समीक्षा, डिफ़ॉल्ट fail-closed |
+| [dsh-memento](https://github.com/PerryLink/dsh-memento) | अनुमोदित क्रॉस-सत्र मेमोरी: ctx.memory seam + SQLite + memory टूल |
+| [dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security) | सुरक्षा-ऑडिट स्किल पैक: सीक्रेट स्कैन, डिपेंडेंसी और सप्लाई-चेन समीक्षा |
+| [dsh-session-pin](https://github.com/PerryLink/dsh-session-pin) | वेब साइडबार में सत्र पिन करें, टिकाऊ क्रम |
+| [dsh-composer-history](https://github.com/PerryLink/dsh-composer-history) | वेब कम्पोज़र के लिए टर्मिनल-शैली इनपुट इतिहास: तीर, Ctrl+R खोज |
+| [dsh-github](https://github.com/PerryLink/dsh-github) | DSH के लिए GitHub PR/issue एकीकरण, हर लेखन अनुमोदित |
+| [dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide) | प्लगइन-विकास ज्ञान आधार, माँग पर एजेंट स्किल के रूप में |
+| [dsh-claude-move](https://github.com/PerryLink/dsh-claude-move) | Claude Code के सत्र, मेमोरी, स्किल और CLAUDE.md को DSH में स्थानांतरित करें |
+
 ## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
