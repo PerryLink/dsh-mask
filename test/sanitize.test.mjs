@@ -16,9 +16,12 @@ test('PII entities are redacted to ***', () => {
 })
 
 test('secrets (sk/ghp) are redacted', () => {
-  const out = redactText('err: sk-fake-pattern leaked; ghp_fake_pattern too')
-  assert.ok(!out.includes('sk-fake-pattern'))
-  assert.ok(!out.includes('ghp_fake_pattern'))
+  // 程序化拼接的假令牌：避免 ghp_/sk- 形状的字面量触发 GitHub secret scanning。
+  const fakeSk = 'sk-' + 'a'.repeat(32)
+  const fakeGhp = 'ghp_' + '0'.repeat(36)
+  const out = redactText(`err: ${fakeSk} leaked; ${fakeGhp} too`)
+  assert.ok(!out.includes(fakeSk))
+  assert.ok(!out.includes(fakeGhp))
 })
 
 test('key=value credentials are redacted regardless of case', () => {

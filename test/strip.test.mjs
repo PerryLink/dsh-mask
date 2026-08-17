@@ -107,14 +107,18 @@ test('ipv4 detected', () => {
 // ---------------------------------------------------------------------------
 
 test('api key and github token detected as KEY', () => {
-  const result = stripper().strip('key: sk-fake-pattern')
-  assert.ok(!result.includes('sk-fake-pattern'))
+  // 程序化拼接的假令牌：避免 ghp_/sk- 形状的字面量触发 GitHub secret scanning。
+  const fakeSk = 'sk-' + 'a'.repeat(32)
+  const result = stripper().strip(`key: ${fakeSk}`)
+  assert.ok(!result.includes(fakeSk))
   assert.ok(result.includes('<KEY_1>'))
 })
 
 test('github token detected as KEY', () => {
-  const result = stripper().strip('token ghp_fake_pattern')
-  assert.ok(!result.includes('ghp_fake_pattern'))
+  // 程序化拼接的假令牌（同上）。
+  const fakeGhp = 'ghp_' + '0'.repeat(36)
+  const result = stripper().strip(`token ${fakeGhp}`)
+  assert.ok(!result.includes(fakeGhp))
   assert.ok(result.includes('<KEY_1>'))
 })
 
