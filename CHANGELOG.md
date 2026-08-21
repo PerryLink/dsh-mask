@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-08-21
+
+### Changed
+
+- Upgrade all `@deepseek-ai/dsh-*` dependencies to `0.1.0-rc.8`: peerDependencies become `>=0.1.0-rc.8 <0.2.0`, devDependencies pin `0.1.0-rc.8`, and the `dshWorkshop` compatibility manifest declares `0.1.0-rc.8`. `@deepseek-ai/cordis` and all non-dsh dependencies are unchanged.
+- Enable `autoInstallPeers` in `pnpm-workspace.yaml` so the composition/lifecycle suites install the rc.8 peers of the mounted `dsh-commands`/`dsh-tools` runtimes.
+
+### Fixed
+
+- `scripts/loader-runner.mjs` adapts to the rc.8 `commands.execute(agent, line, images, signal)` signature (the `images` argument was added in `0.1.0-rc.8`).
+
 ## [0.1.1] - 2026-08-17
 
 ### Fixed
