@@ -47,8 +47,9 @@ export const inject = ['commands', 'storageDomain']
 /**
  * 宿主 append 是否盖章 ignorable 信封（运行时能力探测）。
  * 在全新 detached Context 上构造 SessionStore（绝不接入宿主持久化）：追加一条带
- * { ignorable: true } 的探测事件并回读信封标记。rc.6 的 append 静默丢弃未知选项
- * 键 → 标记缺失 → false（门保持关闭）；支持 ignorable 信封的宿主 → true。
+ * { ignorable: true } 的探测事件并回读信封标记。rc.6/rc.8 的 append 只消费
+ * surfaceOp/sourceEventSeqs，静默丢弃未知选项键 → 标记缺失 → false（门保持关闭）；
+ * 支持 ignorable 信封的宿主 → true。
  * 探测留下的空壳 Context/SessionStore 不持有宿主句柄、定时器或监听器，
  * 返回后即成为 GC 垃圾，无需（也没有 API 可）显式收尾。
  * @returns {boolean} 宿主支持 ignorable 信封。
@@ -61,7 +62,7 @@ export function probeIgnorableAppend() {
       sessionId: 'probe',
       replaced: 0,
       distribution: {},
-    // @ts-ignore rc.6 append has no envelope option — probing it is the point.
+    // @ts-ignore rc.8 append takes no envelope option for non-surface types — probing it is the point.
     }, /** @type {any} */ ({ ignorable: true }))
     return event?.ignorable === true
   } catch {

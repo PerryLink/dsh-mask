@@ -24,7 +24,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `0.1.0-rc.6` |
+| Harness | DeepSeek Harness `0.1.0-rc.8` |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Platforms | Anywhere DSH runs (pure host, zero-dependency regex; no browser half) |
 | Model | Text models fully supported; no extra model capability required |
@@ -136,13 +136,13 @@ Example override in your profile patch:
 
 - **Regex only.** Name (`person`) and address (`address`) recognition needs an external NER recognizer, which the pure-host zero-dependency form does not bundle; `mode: regex+ner` and those entities fail loudly at load. The PII types covered out of the box are phone, email, ID card, bank card, key, and (opt-in) IP.
 - **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship; the restore table and `restore()` are the complete host-side seam a client plugin would consume, and `/mask restore` covers interactive needs today.
-- **Session events on `0.1.0-rc.6`.** The harness does not yet record `mask/*` event types, so on rc.6 the session-log audit appends are skipped (sessions keep loading); the plugin enables them automatically once a host records the types or supports the `ignorable` envelope.
+- **Session events on `0.1.0-rc.8`.** The harness does not yet record `mask/*` event types, and its `Session.append` does not stamp the `ignorable` envelope, so on rc.8 the session-log audit appends are skipped (sessions keep loading); the plugin enables them automatically once a host records the types or supports the `ignorable` envelope.
 
 ## Development
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs against the published rc.6 peers
+pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs against the published rc.8 peers
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # dependency specs resolve from the registry
 pnpm run verify:artifacts                          # shipped files present + index.mjs importable
