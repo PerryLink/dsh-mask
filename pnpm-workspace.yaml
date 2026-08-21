@@ -4,3 +4,8 @@
 # checkout (which is where this repo lives during development).
 packages:
   - .
+
+# pnpm >= 10 defaults autoInstallPeers to false; the composition/lifecycle
+# suites mount the real dsh-commands/dsh-tools runtimes, whose harness peers
+# (dsh-attachment, dsh-brand, dsh-typert-protocol, ...) must resolve.
+autoInstallPeers: true
