@@ -80,7 +80,8 @@ try {
   }
 
   // Real behavior: /mask status through the real commands service.
-  const execution = await ctx.commands.execute(agent, '/mask status', new AbortController().signal)
+  // rc.8: commands.execute(agent, line, images, signal) — no images for /mask.
+  const execution = await ctx.commands.execute(agent, '/mask status', [], new AbortController().signal)
   const text = execution?.result?.text ?? ''
   if (!text.includes('mask: enabled')) {
     throw new Error(`Loader composition: /mask status returned ${JSON.stringify(execution?.result)}`)
