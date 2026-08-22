@@ -1,6 +1,7 @@
 <div align="center">
 
 # dsh-mask
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-mask)
 
 **PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, restore it at the display layer.**
 
