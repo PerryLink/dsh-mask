@@ -24,7 +24,7 @@
 
 | 维度 | 状态 |
 |---|---|
-| Harness | DeepSeek Harness `0.1.0-rc.8` |
+| Harness | DeepSeek Harness `0.1.1-rc.2` |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | 平台 | 任何 DSH 可运行处（纯 host、零依赖正则；无浏览器半） |
 | 模型 | 文本模型完全支持；无需额外模型能力 |
@@ -136,13 +136,13 @@ profile patch 覆盖示例：
 
 - **仅正则。** 姓名（`person`）与地址（`address`）识别需要外部 NER 识别器，纯 host 零依赖形态未捆绑；`mode: regex+ner` 与这些实体在加载期响亮失败。开箱即用覆盖电话、邮箱、身份证、银行卡、密钥与（可选）IP。
 - **展示层还原需要浏览器半。** 遮罩完全在 host 侧，但客户端 UI 中透明还原助手气泡属于浏览器半功能，本纯 host 形态未交付；恢复表与 `restore()` 是供客户端插件消费的完整 host 侧 seam，交互需求现由 `/mask restore` 覆盖。
-- **`0.1.0-rc.8` 会话事件。** 宿主尚未收录 `mask/*` 事件类型，且其 `Session.append` 不盖章 `ignorable` 信封，因此 rc.8 上会话日志审计 append 被跳过（会话仍可加载）；宿主收录类型或支持 `ignorable` 信封后自动开启。
+- **`0.1.1-rc.2` 会话事件。** 宿主尚未收录 `mask/*` 事件类型，且其 `Session.append` 不盖章 `ignorable` 信封，因此 rc.2 上会话日志审计 append 被跳过（会话仍可加载）；宿主收录类型或支持 `ignorable` 信封后自动开启。
 
 ## Development
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs（对照 rc.8 peers）
+pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs（对照 rc.2 peers）
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # 依赖 spec 均来自 registry
 pnpm run verify:artifacts                          # 发布文件齐全 + index.mjs 可 import

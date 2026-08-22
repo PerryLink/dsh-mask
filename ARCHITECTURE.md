@@ -50,7 +50,7 @@ Ported from Pii-Stripper-Middleware's `core.py`:
 
 ## Session events (adaptive gate)
 
-`mask/applied` is declared through `SessionEventMap` declaration merging in `types.d.ts`. At runtime the plugin appends it only when either (a) the host's `KNOWN_SESSION_EVENT_TYPES` already includes the type, or (b) the host `Session.append` supports the `ignorable` envelope (`probeIgnorableAppend`). On `0.1.0-rc.8` neither is true (verified: rc.8 append reads only `surfaceOp`/`sourceEventSeqs` and never stamps `ignorable`), so the gate stays closed and appends are skipped — sessions keep loading. The audit payload is counts + type distribution only, never plaintext or the mapping.
+`mask/applied` is declared through `SessionEventMap` declaration merging in `types.d.ts`. At runtime the plugin appends it only when either (a) the host's `KNOWN_SESSION_EVENT_TYPES` already includes the type, or (b) the host `Session.append` supports the `ignorable` envelope (`probeIgnorableAppend`). On `0.1.1-rc.2` neither is true (verified: rc.2 append reads only `surfaceOp`/`sourceEventSeqs` and never stamps `ignorable`), so the gate stays closed and appends are skipped — sessions keep loading. The audit payload is counts + type distribution only, never plaintext or the mapping.
 
 ## Storage domain
 

@@ -101,7 +101,7 @@ test('apply masks PII at agent/pre-step (waterfall delegates via next)', async (
   assert.ok(!text.includes('a@b.com'))
   assert.ok(text.includes('<PHONE_1>'))
   assert.ok(text.includes('<EMAIL_1>'))
-  // rc.6/rc.8 门均关闭（probe 返回 false）：审计事件不落会话（会话仍可加载）；模型可见内容（占位符）已可自日志重建。
+  // rc.2 门均关闭（probe 返回 false）：审计事件不落会话（会话仍可加载）；模型可见内容（占位符）已可自日志重建。
   assert.equal(session.events.filter((e) => e.type === 'mask/applied').length, 0)
 })
 

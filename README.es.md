@@ -24,7 +24,7 @@
 
 | Superficie | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.0-rc.8` |
+| Harness | DeepSeek Harness `0.1.1-rc.2` |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Donde corra DSH (host puro, regex sin dependencias; sin mitad de navegador) |
 | Modelo | Modelos de texto totalmente soportados |
@@ -118,7 +118,7 @@ Todas las opciones son campos Schemastery `Config` (modificables desde cordis.ym
 
 - **Solo regex.** `person` y `address` requieren un reconocedor NER externo; fallan al cargar. Cubierto de serie: teléfono, correo, documento, tarjeta, clave e IP (opt-in).
 - **La restauración visual necesita una mitad de cliente.** Enmascarar es host-side; desenmascarar burbujas en la UI es una función de navegador que esta forma host puro no incluye. La tabla y `restore()` son el seam host-side completo.
-- **Eventos en `0.1.0-rc.8`.** El host aún no registra `mask/*`, así que los appends de auditoría se omiten (las sesiones siguen cargando).
+- **Eventos en `0.1.1-rc.2`.** El host aún no registra `mask/*`, así que los appends de auditoría se omiten (las sesiones siguen cargando).
 
 ## Development
 

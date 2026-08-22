@@ -34,7 +34,7 @@ software, none of which is bundled into the published tarball:
 | `@deepseek-ai/dsh-*` peers | `>=0.1.0-rc.8 <0.2.0` (peer) | See packages | Official harness seams (`dsh-session`, `dsh-storage-domain`, `dsh-tools`) |
 
 Development-only dependencies (not shipped, used by tests and the typecheck gate)
-add `@deepseek-ai/dsh-agent` and `@deepseek-ai/dsh-commands` at `0.1.0-rc.8`, and
+add `@deepseek-ai/dsh-agent` and `@deepseek-ai/dsh-commands` at `0.1.1-rc.2`, and
 `@types/node`.
 
 At runtime the plugin only talks to the harness services listed as peerDependencies;
