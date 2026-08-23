@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Add the `[Unreleased]` Keep-a-Changelog section and refresh the repo-local development notes (`AGENTS.md`) to match the current `0.1.3` release.
+
 ## [0.1.3] - 2026-08-22
 
 ### Changed

@@ -12,7 +12,8 @@ types.d.ts            Config/result types + mask/applied SessionEventMap declara
 lib/                  zero-DSH-dependency modules (see ARCHITECTURE.md module map);
                       the only lib module allowed to import zod/@deepseek-ai/* is
                       lib/domain.mjs (persistence-boundary validator)
-test/*.test.mjs       node --test (strip/sanitize/mask/store/index + helpers/mock-ctx.mjs)
+test/*.test.mjs       node --test (strip/sanitize/mask/store/index/manifest/
+                      composition/lifecycle + helpers/mock-ctx.mjs)
 scripts/              mechanical gates: verify-self-contained.mjs, verify-artifacts.mjs,
                       verify-readmes.mjs, changelog-section.mjs
 cordis.patch.yml      bundle declaration (insert mask); every Config key documented inline
@@ -59,7 +60,7 @@ pnpm pack                                           # the published tarball
 
 ## Release
 
-Version is currently `0.1.0`. For a new version: bump `package.json#version`, stamp the CHANGELOG `[Unreleased]` section into `## [<x.y.z>] - <UTC date>`, re-run the full gate, commit `chore(release): <x.y.z>`, and `git tag -a v<x.y.z>`. `git push origin main --follow-tags` triggers `.github/workflows/release.yml`, which re-runs the gate, publishes to npm with provenance (skipped without the `NPM_TOKEN` secret), and creates the GitHub Release from the stamped CHANGELOG section. Never push a tag for a version already on the registry.
+Version is currently `0.1.3`. For a new version: bump `package.json#version`, stamp the CHANGELOG `[Unreleased]` section into `## [<x.y.z>] - <UTC date>`, re-run the full gate, commit `chore(release): <x.y.z>`, and `git tag -a v<x.y.z>`. `git push origin main --follow-tags` triggers `.github/workflows/release.yml`, which re-runs the gate, publishes to npm with provenance (skipped without the `NPM_TOKEN` secret), and creates the GitHub Release from the stamped CHANGELOG section. Never push a tag for a version already on the registry.
 
 ## Docs
 
