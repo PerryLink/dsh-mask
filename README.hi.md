@@ -134,6 +134,10 @@ pnpm pack
 
 कोई build चरण नहीं: शुद्ध ESM, `index.mjs` और `lib/` ही भेजे गए आर्टिफ़ैक्ट हैं।
 
+### Benchmark
+
+PII बेंचमार्क (108 सिंथेटिक नमूनों पर प्रति-प्रकार P/R/F1) [`benchmark/RESULTS.md`](benchmark/RESULTS.md) में है; `node benchmark/run.mjs` से दोबारा बनाएँ (कोई build नहीं, कोई नई निर्भरता नहीं)।
+
 ## Topics
 
 `dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `pii`, `mask`, `privacy`, `anonymization`, `security`

@@ -155,6 +155,10 @@ pnpm pack                                          # the published tarball
 
 There is no build step: pure ESM, `index.mjs` and `lib/` are the shipped artifacts.
 
+### Benchmark
+
+The PII benchmark (per-type P/R/F1 over 108 synthetic samples) is published in [`benchmark/RESULTS.md`](benchmark/RESULTS.md); regenerate it with `node benchmark/run.mjs` (no build step, zero new dependencies).
+
 ## Topics
 
 `dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `pii`, `mask`, `privacy`, `anonymization`, `security`

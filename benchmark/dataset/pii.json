@@ -1,0 +1,146 @@
+{
+  "name": "dsh-mask PII benchmark",
+  "version": "1.0.0",
+  "detector": "lib/strip.mjs regexDetect, evaluated per entity type with only that type's patterns enabled",
+  "note": "All values are synthetic test data (public test-card ranges, fake id numbers, example domains). NER-only types (person, address) are not measured: they are not on the regex path.",
+  "types": [
+    {
+      "id": "phone",
+      "samples": [
+        { "id": "phone-pos-01", "label": true, "text": "13800138000" },
+        { "id": "phone-pos-02", "label": true, "text": "13912345678" },
+        { "id": "phone-pos-03", "label": true, "text": "15987654321" },
+        { "id": "phone-pos-04", "label": true, "text": "18800001111" },
+        { "id": "phone-pos-05", "label": true, "text": "13777777777" },
+        { "id": "phone-pos-06", "label": true, "text": "15666666666" },
+        { "id": "phone-pos-07", "label": true, "text": "18612345678" },
+        { "id": "phone-pos-08", "label": true, "text": "13598765432" },
+        { "id": "phone-pos-09", "label": true, "text": "18911112222" },
+        { "id": "phone-pos-10", "label": true, "text": "13655556666" },
+        { "id": "phone-neg-01", "label": false, "text": "12345678901" },
+        { "id": "phone-neg-02", "label": false, "text": "10012345678" },
+        { "id": "phone-neg-03", "label": false, "text": "99912345678" },
+        { "id": "phone-neg-04", "label": false, "text": "1380013800" },
+        { "id": "phone-neg-05", "label": false, "text": "138001380001" },
+        { "id": "phone-neg-06", "label": false, "text": "138-0013-8000" },
+        { "id": "phone-neg-07", "label": false, "text": "021-12345678" },
+        { "id": "phone-neg-08", "label": false, "text": "0987654321" }
+      ]
+    },
+    {
+      "id": "email",
+      "samples": [
+        { "id": "email-pos-01", "label": true, "text": "alice@example.com" },
+        { "id": "email-pos-02", "label": true, "text": "bob.smith@example.org" },
+        { "id": "email-pos-03", "label": true, "text": "a.b-c_d%+e@sub.example.co.uk" },
+        { "id": "email-pos-04", "label": true, "text": "user123@mail.example.io" },
+        { "id": "email-pos-05", "label": true, "text": "test.user@example.com" },
+        { "id": "email-pos-06", "label": true, "text": "foo@example.net" },
+        { "id": "email-pos-07", "label": true, "text": "bar+baz@example.com" },
+        { "id": "email-pos-08", "label": true, "text": "contact@company.co" },
+        { "id": "email-pos-09", "label": true, "text": "admin@site.dev" },
+        { "id": "email-pos-10", "label": true, "text": "info@example.edu" },
+        { "id": "email-neg-01", "label": false, "text": "alice@example" },
+        { "id": "email-neg-02", "label": false, "text": "@example.com" },
+        { "id": "email-neg-03", "label": false, "text": "alice@@example.com" },
+        { "id": "email-neg-04", "label": false, "text": "alice.example.com" },
+        { "id": "email-neg-05", "label": false, "text": "alice@exa_mple.com" },
+        { "id": "email-neg-06", "label": false, "text": "alice@" },
+        { "id": "email-neg-07", "label": false, "text": "example.com" },
+        { "id": "email-neg-08", "label": false, "text": "alice@localhost" }
+      ]
+    },
+    {
+      "id": "id-card",
+      "samples": [
+        { "id": "idcard-pos-01", "label": true, "text": "11010519491231002X" },
+        { "id": "idcard-pos-02", "label": true, "text": "110101199001011234" },
+        { "id": "idcard-pos-03", "label": true, "text": "310101198506123456" },
+        { "id": "idcard-pos-04", "label": true, "text": "440101197001015678" },
+        { "id": "idcard-pos-05", "label": true, "text": "500101199201019876" },
+        { "id": "idcard-pos-06", "label": true, "text": "120101198801016543" },
+        { "id": "idcard-pos-07", "label": true, "text": "330101199601012109" },
+        { "id": "idcard-pos-08", "label": true, "text": "610101197501013210" },
+        { "id": "idcard-pos-09", "label": true, "text": "210101199901014321" },
+        { "id": "idcard-pos-10", "label": true, "text": "370101198001016789" },
+        { "id": "idcard-neg-01", "label": false, "text": "11010519491231002Y" },
+        { "id": "idcard-neg-02", "label": false, "text": "11010519491231002" },
+        { "id": "idcard-neg-03", "label": false, "text": "1101051949123100211" },
+        { "id": "idcard-neg-04", "label": false, "text": "1101051949123100ab" },
+        { "id": "idcard-neg-05", "label": false, "text": "ABCDEFGHIJKLMNOPQR" },
+        { "id": "idcard-neg-06", "label": false, "text": "11010519491231 0021" },
+        { "id": "idcard-neg-07", "label": false, "text": "1234567890123456" },
+        { "id": "idcard-neg-08", "label": false, "text": "110105-19491231-0021" }
+      ]
+    },
+    {
+      "id": "bank-card",
+      "samples": [
+        { "id": "bankcard-pos-01", "label": true, "text": "4111111111111111" },
+        { "id": "bankcard-pos-02", "label": true, "text": "5500005555555559" },
+        { "id": "bankcard-pos-03", "label": true, "text": "6011111111111117" },
+        { "id": "bankcard-pos-04", "label": true, "text": "5105105105105100" },
+        { "id": "bankcard-pos-05", "label": true, "text": "6222021234567890123" },
+        { "id": "bankcard-pos-06", "label": true, "text": "6222601234567890123" },
+        { "id": "bankcard-pos-07", "label": true, "text": "6217001234567890" },
+        { "id": "bankcard-pos-08", "label": true, "text": "6228480402564890018" },
+        { "id": "bankcard-pos-09", "label": true, "text": "3566002020360505" },
+        { "id": "bankcard-pos-10", "label": true, "text": "6200000000000000000" },
+        { "id": "bankcard-neg-01", "label": false, "text": "123456789012345" },
+        { "id": "bankcard-neg-02", "label": false, "text": "12345678901234567890" },
+        { "id": "bankcard-neg-03", "label": false, "text": "4111-1111-1111-1111" },
+        { "id": "bankcard-neg-04", "label": false, "text": "4111 1111 1111 1111" },
+        { "id": "bankcard-neg-05", "label": false, "text": "card number: 12345678901234" },
+        { "id": "bankcard-neg-06", "label": false, "text": "123456789012345A" },
+        { "id": "bankcard-neg-07", "label": false, "text": "abcdefghijklmnop" },
+        { "id": "bankcard-neg-08", "label": false, "text": "99999999999999" }
+      ]
+    },
+    {
+      "id": "key",
+      "samples": [
+        { "id": "key-pos-01", "label": true, "text": "sk-abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-02", "label": true, "text": "sk-proj-abcdefghijklmnopqrst" },
+        { "id": "key-pos-03", "label": true, "text": "ghp_abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-04", "label": true, "text": "gho_abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-05", "label": true, "text": "ghu_abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-06", "label": true, "text": "ghs_abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-07", "label": true, "text": "ghr_abcdefghijklmnopqrstuvwx" },
+        { "id": "key-pos-08", "label": true, "text": "xoxb-abcdefghijklmnopqrstuvwxyz" },
+        { "id": "key-pos-09", "label": true, "text": "AKIAIOSFODNN7EXAMPLE" },
+        { "id": "key-pos-10", "label": true, "text": "Bearer abcdefghijklmnopqrstuvwx" },
+        { "id": "key-neg-01", "label": false, "text": "sk-abc" },
+        { "id": "key-neg-02", "label": false, "text": "sk-123456789012345" },
+        { "id": "key-neg-03", "label": false, "text": "AKIAIOSFODNN7" },
+        { "id": "key-neg-04", "label": false, "text": "Bearer short" },
+        { "id": "key-neg-05", "label": false, "text": "ghp_abcdefghijklmn" },
+        { "id": "key-neg-06", "label": false, "text": "xoxb-short" },
+        { "id": "key-neg-07", "label": false, "text": "my api key is not here" },
+        { "id": "key-neg-08", "label": false, "text": "password12345" }
+      ]
+    },
+    {
+      "id": "ip",
+      "samples": [
+        { "id": "ip-pos-01", "label": true, "text": "192.168.1.1" },
+        { "id": "ip-pos-02", "label": true, "text": "10.0.0.1" },
+        { "id": "ip-pos-03", "label": true, "text": "172.16.254.1" },
+        { "id": "ip-pos-04", "label": true, "text": "8.8.8.8" },
+        { "id": "ip-pos-05", "label": true, "text": "203.0.113.7" },
+        { "id": "ip-pos-06", "label": true, "text": "198.51.100.42" },
+        { "id": "ip-pos-07", "label": true, "text": "255.255.255.0" },
+        { "id": "ip-pos-08", "label": true, "text": "127.0.0.1" },
+        { "id": "ip-pos-09", "label": true, "text": "1.1.1.1" },
+        { "id": "ip-pos-10", "label": true, "text": "192.0.2.146" },
+        { "id": "ip-neg-01", "label": false, "text": "example.com" },
+        { "id": "ip-neg-02", "label": false, "text": "version 1.2.3" },
+        { "id": "ip-neg-03", "label": false, "text": "12.34.56" },
+        { "id": "ip-neg-04", "label": false, "text": "not an ip address" },
+        { "id": "ip-neg-05", "label": false, "text": "999.999.999.999" },
+        { "id": "ip-neg-06", "label": false, "text": "300.1.1.1" },
+        { "id": "ip-neg-07", "label": false, "text": "1.2.3.4.5" },
+        { "id": "ip-neg-08", "label": false, "text": "10.0.0.300" }
+      ]
+    }
+  ]
+}

@@ -134,6 +134,10 @@ pnpm pack
 
 Sin paso de build: ESM puro, `index.mjs` y `lib/` son los artefactos enviados.
 
+### Benchmark
+
+El benchmark de PII (P/R/F1 por tipo sobre 108 muestras sintéticas) está en [`benchmark/RESULTS.md`](benchmark/RESULTS.md); regenéralo con `node benchmark/run.mjs` (sin build, cero dependencias nuevas).
+
 ## Topics
 
 `dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `pii`, `mask`, `privacy`, `anonymization`, `security`

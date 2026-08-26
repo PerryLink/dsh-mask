@@ -1,0 +1,662 @@
+{
+  "name": "dsh-mask PII benchmark",
+  "version": "1.0.0",
+  "detector": "lib/strip.mjs regexDetect, evaluated per entity type with only that type's patterns enabled",
+  "generatedBy": "benchmark/run.mjs",
+  "perType": [
+    {
+      "id": "phone",
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "fpr": 0,
+      "samples": [
+        {
+          "id": "phone-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "phone-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-05",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-06",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-07",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "phone-neg-08",
+          "label": false,
+          "predicted": false
+        }
+      ]
+    },
+    {
+      "id": "email",
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "fpr": 0,
+      "samples": [
+        {
+          "id": "email-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "email-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-05",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-06",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-07",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "email-neg-08",
+          "label": false,
+          "predicted": false
+        }
+      ]
+    },
+    {
+      "id": "id-card",
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "fpr": 0,
+      "samples": [
+        {
+          "id": "idcard-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "idcard-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-05",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-06",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-07",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "idcard-neg-08",
+          "label": false,
+          "predicted": false
+        }
+      ]
+    },
+    {
+      "id": "bank-card",
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "fpr": 0,
+      "samples": [
+        {
+          "id": "bankcard-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "bankcard-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-05",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-06",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-07",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "bankcard-neg-08",
+          "label": false,
+          "predicted": false
+        }
+      ]
+    },
+    {
+      "id": "key",
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 8,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "fpr": 0,
+      "samples": [
+        {
+          "id": "key-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "key-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-05",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-06",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-07",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "key-neg-08",
+          "label": false,
+          "predicted": false
+        }
+      ]
+    },
+    {
+      "id": "ip",
+      "tp": 10,
+      "fp": 4,
+      "fn": 0,
+      "tn": 4,
+      "total": 18,
+      "positives": 10,
+      "negatives": 8,
+      "precision": 0.714,
+      "recall": 1,
+      "f1": 0.833,
+      "fpr": 0.5,
+      "samples": [
+        {
+          "id": "ip-pos-01",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-02",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-03",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-04",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-05",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-06",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-07",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-08",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-09",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-pos-10",
+          "label": true,
+          "predicted": true
+        },
+        {
+          "id": "ip-neg-01",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "ip-neg-02",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "ip-neg-03",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "ip-neg-04",
+          "label": false,
+          "predicted": false
+        },
+        {
+          "id": "ip-neg-05",
+          "label": false,
+          "predicted": true
+        },
+        {
+          "id": "ip-neg-06",
+          "label": false,
+          "predicted": true
+        },
+        {
+          "id": "ip-neg-07",
+          "label": false,
+          "predicted": true
+        },
+        {
+          "id": "ip-neg-08",
+          "label": false,
+          "predicted": true
+        }
+      ]
+    }
+  ],
+  "overall": {
+    "macro": {
+      "classes": 6,
+      "precision": 0.952,
+      "recall": 1,
+      "f1": 0.972
+    },
+    "micro": {
+      "tp": 60,
+      "fp": 4,
+      "fn": 0,
+      "tn": 44,
+      "precision": 0.938,
+      "recall": 1,
+      "f1": 0.968,
+      "fpr": 0.083
+    }
+  }
+}

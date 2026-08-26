@@ -152,6 +152,10 @@ pnpm pack                                          # 发布 tarball
 
 无构建步骤：纯 ESM，`index.mjs` 与 `lib/` 即发布产物。
 
+### Benchmark
+
+PII 基准（108 个合成样本的逐类 P/R/F1）见 [`benchmark/RESULTS.md`](benchmark/RESULTS.md)；用 `node benchmark/run.mjs` 复现（无需构建、零新依赖）。
+
 ## Topics
 
 `dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `pii`, `mask`, `privacy`, `anonymization`, `security`
