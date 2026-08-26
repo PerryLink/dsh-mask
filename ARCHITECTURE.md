@@ -16,7 +16,7 @@
 | `index.mjs` | The single host face: `Config` schema + `resolveConfig`, `probeIgnorableAppend`, the `agent/pre-step` masking listener, the `/mask` command handler, the `mask_test` tool factory, `apply()` |
 | `lib/constants.mjs` | Vocabulary + protocol constants (entity names/labels, modes, scopes, error codes, defaults, bounds) — zero dependency |
 | `lib/errors.mjs` | Structured domain errors (`MaskError` with stable `code` + `details`) |
-| `lib/strip.mjs` | The regex PII detector and `Stripper` (strip/stripInto/restore/mapping/stats/loadMapping) — zero dependency |
+| `lib/strip.mjs` | The regex PII detector (`regexDetect`), the pluggable-detector `Stripper` (strip/stripInto/restore/mapping/stats/loadMapping), and `createStripper` — zero dependency |
 | `lib/mask.mjs` | Message masking: rewrite `UserMessage` text blocks through a `Stripper` — zero dependency |
 | `lib/sanitize.mjs` | Pure display/log redaction (PII entities, secrets, URL credentials, mapping summarization) |
 | `lib/gate.mjs` | Session-event adaptive gate (append only when the host records the type or supports `ignorable`) |
@@ -48,6 +48,10 @@ Ported from Pii-Stripper-Middleware's `core.py`:
 - Overlap resolution sorts by start ascending, then score descending, and keeps only non-overlapping spans (first-come, higher score wins at the same position) — an 18-digit ID card beats a 16–19-digit bank-card match.
 - Same original value reuses the same placeholder; the counter is monotonic per session so placeholders never collide across turns.
 
+## Detector Provider seam
+
+The detector is a pluggable Provider: `Stripper` and `createStripper` accept an optional `detector: (text) => PIIEntity[]`. When omitted, the built-in `regexDetect` (the ported regex set) runs unchanged, so the zero-dependency default path is untouched. An external recognizer (e.g. NER for `person`/`address`) plugs in by supplying that one function; overlap resolution, placeholder reuse, counting, and restore all stay shared.
+
 ## Session events (adaptive gate)
 
 `mask/applied` is declared through `SessionEventMap` declaration merging in `types.d.ts`. At runtime the plugin appends it only when either (a) the host's `KNOWN_SESSION_EVENT_TYPES` already includes the type, or (b) the host `Session.append` supports the `ignorable` envelope (`probeIgnorableAppend`). On `0.1.1-rc.2` neither is true (verified: rc.2 append reads only `surfaceOp`/`sourceEventSeqs` and never stamps `ignorable`), so the gate stays closed and appends are skipped — sessions keep loading. The audit payload is counts + type distribution only, never plaintext or the mapping.
@@ -65,6 +69,6 @@ The `dsh_mask` domain has one `restore` table keyed by session id. Its record ho
 
 ## Reserved seams
 
-- `mode: regex+ner` — external name/address recognition; fails loudly until a recognizer is wired in.
-- `scope: tools` — masking tool arguments (`tools/pre-execute`); reserved.
-- A browser half would consume the restore table to transparently un-mask assistant bubbles; this pure-host form ships the host-side seam only.
+- `mode: regex+ner` — external name/address recognition; fails loudly until a recognizer is wired in (the detector Provider seam above is the plug point).
+- `scope: tools` — implemented as `tools/post-execute` result-content masking. Tool-argument rewriting is deliberately NOT offered upstream: `tools/pre-execute`'s `PreToolDecision` has no input rewrite because logged/rendered arguments must match what ran, so `tools` scope masks the other model-visible tool surface (the result content) instead of the arguments.
+- A browser half would consume the restore table to transparently un-mask assistant bubbles; the host-side restore surface (`/mask restore` + `RestoreStore.restore`) ships, and the browser slot is feature-flagged behind `maskClientEnabled` (default false) pending live slot-catalog verification.

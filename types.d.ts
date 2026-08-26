@@ -23,8 +23,11 @@ export interface Config {
   mode?: 'regex' | 'regex+ner'
   /** 启用的实体类型；regex 集为 phone/email/id-card/bank-card/key/ip，person/address 需 NER。 */
   entities?: string[]
-  /** 遮罩作用域；只有 'messages'（agent/pre-step 消息）实现，'tools' 预留并响亮失败。 */
-  scope?: 'messages' | 'tools'
+  /**
+   * 遮罩作用域；'messages' = agent/pre-step 入站消息，'tools' = tools/post-execute
+   * 工具结果。可传单个字符串或数组（如 `['messages', 'tools']`）。默认 `['messages']`。
+   */
+  scope?: 'messages' | 'tools' | Array<'messages' | 'tools'>
   /** 注册 /mask 命令（默认 true）。 */
   registerCommand?: boolean
   /** tools 服务存在时注册 mask_test 工具（默认 true）。 */
@@ -35,6 +38,8 @@ export interface Config {
   maxRestoreEntriesPerSession?: number
   /** 内存会话脱敏器上限（LRU 逐出，映射按需从领域回载）。 */
   maxSessions?: number
+  /** 浏览器半自动还原气泡开关（防御性 client slot；默认 false，未启用前对 UI 无副作用）。 */
+  maskClientEnabled?: boolean
 }
 
 /** mask_test 工具规范结果。 */

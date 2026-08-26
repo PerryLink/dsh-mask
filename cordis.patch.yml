@@ -36,10 +36,13 @@
           - id-card
           - bank-card
           - key
-        # Masking surface. Only 'messages' (mask agent/pre-step messages before
-        # they enter the model) is implemented; 'tools' (mask tool arguments) is
-        # reserved and fails loud at load.
-        scope: messages
+        # Masking surface(s). 'messages' masks agent/pre-step messages before
+        # they enter the model; 'tools' masks tool-result text on
+        # tools/post-execute before it is logged and fed back to the model
+        # (tool-argument rewriting is blocked upstream — see ARCHITECTURE.md).
+        # Accepts a single string or an array: [messages, tools].
+        scope:
+          - messages
         # Surface switches: register the /mask command and the mask_test tool.
         registerCommand: true
         registerTools: true
@@ -52,3 +55,8 @@
         # Cap on in-memory session strippers; least-recently-used sessions are
         # evicted (mapping reloads from the storage domain on demand).
         maxSessions: 1000
+        # Browser half "reveal" bubble (defensive, feature-flagged). The host
+        # restore surface (/mask restore + the in-memory/domain restore table)
+        # already backs it; the client slot ships separately and is off by
+        # default until the live slot catalog verifies the target slot.
+        maskClientEnabled: false

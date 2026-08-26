@@ -236,3 +236,28 @@ test('detector registry covers all regex entities', () => {
     assert.ok(entities.has(entity), `missing detector for ${entity}`)
   }
 })
+
+// ---------------------------------------------------------------------------
+// 检测器 Provider 接口（可插拔 detector；缺省回退内置正则，行为不变）
+// ---------------------------------------------------------------------------
+
+test('custom detector provider replaces the built-in regex detector', () => {
+  const custom = (text) => {
+    const start = text.indexOf('SECRETWORD')
+    if (start === -1) return []
+    return [{ text: 'SECRETWORD', entity: 'custom', label: 'CUSTOM', start, end: start + 10, score: 1 }]
+  }
+  const s = createStripper({ entities: [], maxEntries: 100, detector: custom })
+  const result = s.strip('payload SECRETWORD end')
+  assert.ok(!result.includes('SECRETWORD'))
+  assert.ok(result.includes('<CUSTOM_1>'))
+  // 内置正则对同一文本无实体命中，证明结果来自注入的 detector。
+  assert.equal(s.restore(result), 'payload SECRETWORD end')
+})
+
+test('detector omitted keeps the built-in regex detector (zero-dependency default)', () => {
+  const s = createStripper({ entities: ['phone'], maxEntries: 100 })
+  const result = s.strip('电话 13812345678')
+  assert.ok(result.includes('<PHONE_1>'))
+  assert.ok(!result.includes('13812345678'))
+})

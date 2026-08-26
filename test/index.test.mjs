@@ -20,14 +20,23 @@ test('resolveConfig applies defaults', () => {
   assert.equal(c.enabled, true)
   assert.equal(c.mode, 'regex')
   assert.deepEqual(c.entities, ['phone', 'email', 'id-card', 'bank-card', 'key'])
-  assert.equal(c.scope, 'messages')
+  assert.deepEqual(c.scope, ['messages'])
   assert.equal(c.maxRestoreEntriesPerSession, 500)
   assert.equal(c.maxSessions, 1000)
+  assert.equal(c.maskClientEnabled, false)
 })
 
-test('resolveConfig fails loud on unimplemented mode, scope, and NER entities', () => {
+test('resolveConfig normalizes scope (string or array) and deduplicates', () => {
+  assert.deepEqual(resolveConfig({ scope: 'messages' }).scope, ['messages'])
+  assert.deepEqual(resolveConfig({ scope: 'tools' }).scope, ['tools'])
+  assert.deepEqual(resolveConfig({ scope: ['messages', 'tools'] }).scope, ['messages', 'tools'])
+  assert.deepEqual(resolveConfig({ scope: ['tools', 'tools', 'messages'] }).scope, ['tools', 'messages'])
+})
+
+test('resolveConfig fails loud on unimplemented mode, unknown scope, and NER entities', () => {
   assert.throws(() => resolveConfig({ mode: 'regex+ner' }), /not bundled/)
-  assert.throws(() => resolveConfig({ scope: 'tools' }), /not implemented/)
+  assert.throws(() => resolveConfig({ scope: /** @type {any} */ ('nope') }), /not a valid surface/)
+  assert.throws(() => resolveConfig({ scope: [] }), /at least one surface/)
   assert.throws(() => resolveConfig({ entities: ['person'] }), /requires mode "regex\+ner"/)
   assert.throws(() => resolveConfig({ entities: ['address'] }), /requires mode "regex\+ner"/)
 })
@@ -111,6 +120,36 @@ test('apply does not mask when nothing to mask (returns downstream decision)', a
   const messages = [makeTextMessage('普通文本无 PII')]
   const decision = await mock.waterfall('agent/pre-step', { agent, messages, turn: 1, step: 1, signal: new AbortController().signal }, () => Promise.resolve({ kind: 'enter', messages }))
   assert.equal(decision.messages, messages)
+})
+
+test('apply masks PII in tool results at tools/post-execute (scope: tools)', async () => {
+  const mock = mount({ scope: 'tools' })
+  assert.ok(!mock.listeners.has('agent/pre-step'))
+  assert.ok(mock.listeners.has('tools/post-execute'))
+  const session = makeSession({ id: 's1' })
+  const exec = makeExec({ agent: makeAgent(session) })
+  const result = { isError: false, content: [{ type: 'text', text: '查询结果：手机 13812345678' }], value: {} }
+  const decision = await mock.waterfall('tools/post-execute', exec, result, () => Promise.resolve({ kind: 'accept' }))
+  assert.equal(decision.kind, 'accept')
+  const text = decision.content[0].text
+  assert.ok(!text.includes('13812345678'))
+  assert.ok(text.includes('<PHONE_1>'))
+})
+
+test('apply with scope [messages, tools] registers both listeners', () => {
+  const mock = mount({ scope: ['messages', 'tools'] })
+  assert.ok(mock.listeners.has('agent/pre-step'))
+  assert.ok(mock.listeners.has('tools/post-execute'))
+})
+
+test('apply does not mask tool results when nothing to mask (delegates to next)', async () => {
+  const mock = mount({ scope: 'tools' })
+  const session = makeSession({ id: 's1' })
+  const exec = makeExec({ agent: makeAgent(session) })
+  const result = { isError: false, content: [{ type: 'text', text: '干净结果' }], value: {} }
+  const decision = await mock.waterfall('tools/post-execute', exec, result, () => Promise.resolve({ kind: 'accept' }))
+  assert.equal(decision.kind, 'accept')
+  assert.equal(decision.content, undefined) // 未替换：不覆盖下游决策。
 })
 
 test('/mask status reports counts and distribution without plaintext', async () => {

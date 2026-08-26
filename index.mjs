@@ -34,7 +34,7 @@ import {
 } from './lib/constants.mjs'
 import { badConfig, messageOf, nerModeUnsupported, nerUnsupported, scopeUnsupported } from './lib/errors.mjs'
 import { createStripper } from './lib/strip.mjs'
-import { maskMessages } from './lib/mask.mjs'
+import { maskMessages, maskContentBlocks } from './lib/mask.mjs'
 import { makeEventGate, maybeAppendSessionEvent } from './lib/gate.mjs'
 import { RestoreStore } from './lib/store.mjs'
 import { dshMaskDomainSpec } from './lib/domain.mjs'
@@ -78,12 +78,16 @@ export const Config = Schema.object({
   enabled: Schema.boolean().default(DEFAULTS.ENABLED),
   mode: Schema.union([MODES.REGEX, MODES.REGEX_NER]).default(DEFAULTS.MODE),
   entities: Schema.array(Schema.string()).default(DEFAULTS.ENTITIES),
-  scope: Schema.union([SCOPES.MESSAGES, 'tools']).default(DEFAULTS.SCOPE),
+  scope: Schema.union([
+    Schema.array(Schema.union([SCOPES.MESSAGES, SCOPES.TOOLS])),
+    Schema.union([SCOPES.MESSAGES, SCOPES.TOOLS]),
+  ]).default(DEFAULTS.SCOPE),
   registerCommand: Schema.boolean().default(DEFAULTS.REGISTER_COMMAND),
   registerTools: Schema.boolean().default(DEFAULTS.REGISTER_TOOLS),
   persistRestoreTable: Schema.boolean().default(DEFAULTS.PERSIST_RESTORE_TABLE),
   maxRestoreEntriesPerSession: Schema.number().default(DEFAULTS.MAX_RESTORE_ENTRIES_PER_SESSION),
   maxSessions: Schema.number().default(DEFAULTS.MAX_SESSIONS),
+  maskClientEnabled: Schema.boolean().default(DEFAULTS.MASK_CLIENT_ENABLED),
 })
 
 /**
@@ -92,16 +96,18 @@ export const Config = Schema.object({
  * @returns {Required<Config> & {entities: string[]}} 校验后的配置。
  */
 export function resolveConfig(config = {}) {
+  const rawScope = config.scope ?? DEFAULTS.SCOPE
   const resolved = {
     enabled: config.enabled ?? DEFAULTS.ENABLED,
     mode: config.mode ?? DEFAULTS.MODE,
     entities: [...(config.entities ?? DEFAULTS.ENTITIES)],
-    scope: config.scope ?? DEFAULTS.SCOPE,
+    scope: typeof rawScope === 'string' ? [rawScope] : [...rawScope],
     registerCommand: config.registerCommand ?? DEFAULTS.REGISTER_COMMAND,
     registerTools: config.registerTools ?? DEFAULTS.REGISTER_TOOLS,
     persistRestoreTable: config.persistRestoreTable ?? DEFAULTS.PERSIST_RESTORE_TABLE,
     maxRestoreEntriesPerSession: config.maxRestoreEntriesPerSession ?? DEFAULTS.MAX_RESTORE_ENTRIES_PER_SESSION,
     maxSessions: config.maxSessions ?? DEFAULTS.MAX_SESSIONS,
+    maskClientEnabled: config.maskClientEnabled ?? DEFAULTS.MASK_CLIENT_ENABLED,
   }
   if (resolved.enabled === false) return resolved
 
@@ -111,8 +117,19 @@ export function resolveConfig(config = {}) {
   if (resolved.mode !== MODES.REGEX) {
     throw badConfig(`mode ${JSON.stringify(resolved.mode)} must be one of regex|regex+ner`)
   }
-  if (resolved.scope !== SCOPES.MESSAGES) {
-    throw scopeUnsupported(resolved.scope)
+  const scopeSeen = new Set()
+  resolved.scope = resolved.scope.filter((surface) => {
+    if (scopeSeen.has(surface)) return false
+    scopeSeen.add(surface)
+    return true
+  })
+  if (resolved.scope.length === 0) {
+    throw badConfig('scope must list at least one surface (messages and/or tools)')
+  }
+  for (const surface of resolved.scope) {
+    if (surface !== SCOPES.MESSAGES && surface !== SCOPES.TOOLS) {
+      throw scopeUnsupported(surface)
+    }
   }
   const seen = new Set()
   resolved.entities = resolved.entities.filter((entity) => {
@@ -277,30 +294,62 @@ export function apply(ctx, config = {}) {
   let runtimeEnabled = true
 
   // --- agent/pre-step 遮罩（waterfall：先 next() 取下游决策，再遮罩其消息）。
-  ctx.on('agent/pre-step', async ({ agent, messages }, next) => {
-    if (!runtimeEnabled) return next()
-    const decision = await next()
-    if (decision.kind !== 'enter') return decision
-    const sessionId = agent?.session?.id
-    if (sessionId === undefined || sessionId === null || sessionId === '') return decision
-    const stripper = store.stripperFor(sessionId)
-    const before = stripper.stats()
-    const { messages: maskedMessages, replaced } = maskMessages(decision.messages, stripper)
-    if (replaced === 0) return decision
-    const after = stripper.stats()
-    const distribution = {}
-    for (const [label, count] of Object.entries(after.distribution)) {
-      const delta = count - (before.distribution[label] ?? 0)
-      if (delta > 0) distribution[label] = delta
-    }
-    void store.persist(sessionId)
-    maybeAppendSessionEvent(agent.session, SESSION_EVENTS.APPLIED, {
-      sessionId,
-      replaced,
-      distribution,
-    }, eventGate, warn)
-    return { kind: 'enter', messages: maskedMessages }
-  })
+  if (resolved.scope.includes(SCOPES.MESSAGES)) {
+    ctx.on('agent/pre-step', async ({ agent, messages }, next) => {
+      if (!runtimeEnabled) return next()
+      const decision = await next()
+      if (decision.kind !== 'enter') return decision
+      const sessionId = agent?.session?.id
+      if (sessionId === undefined || sessionId === null || sessionId === '') return decision
+      const stripper = store.stripperFor(sessionId)
+      const before = stripper.stats()
+      const { messages: maskedMessages, replaced } = maskMessages(decision.messages, stripper)
+      if (replaced === 0) return decision
+      const after = stripper.stats()
+      const distribution = {}
+      for (const [label, count] of Object.entries(after.distribution)) {
+        const delta = count - (before.distribution[label] ?? 0)
+        if (delta > 0) distribution[label] = delta
+      }
+      void store.persist(sessionId)
+      maybeAppendSessionEvent(agent.session, SESSION_EVENTS.APPLIED, {
+        sessionId,
+        replaced,
+        distribution,
+      }, eventGate, warn)
+      return { kind: 'enter', messages: maskedMessages }
+    })
+  }
+
+  // --- tools/post-execute 遮罩（scope: tools）：工具结果 text 块里的 PII 在回喂模型
+  // 与落盘前脱敏为占位符。工具入参本身无法在 pre-execute 改写（上游契约），故 tools
+  // 作用域落在结果这一可改写的模型可见面（见 ARCHITECTURE.md）。
+  if (resolved.scope.includes(SCOPES.TOOLS)) {
+    ctx.on('tools/post-execute', async (exec, result, next) => {
+      if (!runtimeEnabled) return next()
+      const decision = await next()
+      if (decision.kind !== 'accept') return decision
+      const sessionId = exec?.agent?.session?.id
+      if (sessionId === undefined || sessionId === null || sessionId === '') return decision
+      const stripper = store.stripperFor(sessionId)
+      const before = stripper.stats()
+      const { blocks: maskedBlocks, replaced } = maskContentBlocks(result.content, stripper)
+      if (replaced === 0) return decision
+      const after = stripper.stats()
+      const distribution = {}
+      for (const [label, count] of Object.entries(after.distribution)) {
+        const delta = count - (before.distribution[label] ?? 0)
+        if (delta > 0) distribution[label] = delta
+      }
+      void store.persist(sessionId)
+      maybeAppendSessionEvent(exec.agent?.session, SESSION_EVENTS.APPLIED, {
+        sessionId,
+        replaced,
+        distribution,
+      }, eventGate, warn)
+      return { kind: 'accept', content: maskedBlocks }
+    })
+  }
 
   // --- /mask 命令（Consumer）。
   if (resolved.registerCommand) {
@@ -373,6 +422,7 @@ export {
   RestoreStore,
   createStripper,
   maskMessages,
+  maskContentBlocks,
   makeEventGate,
   maybeAppendSessionEvent,
   dshMaskDomainSpec,

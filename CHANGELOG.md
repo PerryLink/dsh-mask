@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`tools` masking scope.** `scope` now accepts `'messages'` and/or `'tools'` (string or array, default `['messages']`). The `tools` surface masks tool-result text blocks on `tools/post-execute` before they are logged and fed back to the model. Tool-argument rewriting stays out of scope because the upstream `tools/pre-execute` `PreToolDecision` deliberately offers no input rewrite (logged/rendered arguments must match what ran).
+- **Detector Provider seam.** `Stripper`/`createStripper` accept an optional `detector: (text) => PIIEntity[]`; the built-in `regexDetect` remains the zero-dependency default, unchanged, so an external NER recognizer can plug in later without touching the masking pipeline.
+- **`maskClientEnabled` feature flag** (default `false`) for the future browser-half reveal bubble; the host restore surface (`/mask restore` + `RestoreStore.restore`) already backs it.
+
 ## [0.1.4] - 2026-08-23
 
 ### Changed

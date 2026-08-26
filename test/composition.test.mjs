@@ -79,7 +79,7 @@ test('invalid config fails loud through the Loader for the expected reason', () 
   const cases = [
     { lines: ["enabled: 'yes'"], reason: /expected boolean/u },
     { lines: ["mode: 'regex+ner'"], reason: /not bundled/u },
-    { lines: ["scope: 'tools'"], reason: /not implemented/u },
+    { lines: ["scope: 'nope'"], reason: /expected/u },
   ]
   const entryUrl = pathToFileURL(entry).href
   for (const entryCase of cases) {

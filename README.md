@@ -90,12 +90,13 @@ All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id
 | `enabled` | `true` | Master switch; `false` unregisters the listener, the `/mask` command, and the `mask_test` tool |
 | `mode` | `regex` | Detection mode; only `regex` is implemented (`regex+ner` for name/address recognition is reserved and fails loud) |
 | `entities` | `[phone, email, id-card, bank-card, key]` | Which PII types to mask; `ip` is also regex-capable (opt-in), `person`/`address` require NER |
-| `scope` | `messages` | Masking surface; only `messages` (agent messages) is implemented (`tools` argument masking is reserved) |
+| `scope` | `[messages]` | Masking surface(s); `messages` masks agent/pre-step messages, `tools` masks tool-result text on tools/post-execute. Accepts a string or an array, e.g. `[messages, tools]` |
 | `registerCommand` | `true` | Register the `/mask` command |
 | `registerTools` | `true` | Register the `mask_test` tool when the tools service is present |
 | `persistRestoreTable` | `true` | Persist the restore table to the controlled `dsh_mask` storage domain (`false` = memory only) |
 | `maxRestoreEntriesPerSession` | `500` | Per-session restore entry cap (oldest evicted first) |
 | `maxSessions` | `1000` | In-memory session cap (least-recently-used evicted, mapping reloaded on demand) |
+| `maskClientEnabled` | `false` | Feature flag for the browser half "reveal" bubble (defensive; off by default until the live slot catalog verifies the target slot) |
 
 Example override in your profile patch:
 
@@ -114,6 +115,7 @@ Example override in your profile patch:
 | Surface | Reveals plaintext | Notes |
 |---|---|---|
 | `agent/pre-step` masking | never | Rewrites messages to placeholders before they are logged or sent to the model |
+| `tools/post-execute` masking | never | Rewrites tool-result text blocks to placeholders before they are logged or fed back to the model (scope: `tools`) |
 | `/mask status` | never | Enabled state, total replaced, type distribution |
 | `/mask on` / `/mask off` | never | Runtime toggle (resets to `config.enabled` on restart) |
 | `/mask restore <text>` | yes (explicit) | Unmaps placeholders back to the values stored for this session |
@@ -130,7 +132,7 @@ Example override in your profile patch:
 - **Plaintext never enters the session log.** The masked (placeholder) form is what gets logged and sent to the model, so model-visible content is reconstructable from the log in placeholder form; the originals stay in the restore table.
 - **Sanitize before display/log.** `lib/sanitize.mjs` redacts PII, secrets, and URL credentials before any text reaches the model or the log; `mask_test` and `/mask status` never echo originals.
 - **Controlled restore.** `/mask restore` is the single explicit reveal surface, and it only reads the mapping for the active session.
-- **Fail closed.** Unimplemented `mode` (`regex+ner`), `scope` (`tools`), NER-only entities, and out-of-bounds numbers all fail loudly at load.
+- **Fail closed.** Unimplemented `mode` (`regex+ner`), unknown `scope` values, NER-only entities, and out-of-bounds numbers all fail loudly at load.
 - **Registrations are effects.** The listener, command, tool, and storage-domain close are all Cordis effects — stop/hot-reload removes them.
 
 ## Known limitations

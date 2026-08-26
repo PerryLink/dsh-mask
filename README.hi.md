@@ -83,7 +83,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 | `enabled` | `true` | मुख्य स्विच |
 | `mode` | `regex` | केवल `regex` लागू (`regex+ner` आरक्षित) |
 | `entities` | `[phone, email, id-card, bank-card, key]` | PII प्रकार; `ip` opt-in, `person`/`address` को NER चाहिए |
-| `scope` | `messages` | केवल `messages` लागू |
+| `scope` | `[messages]` | सतहें: `messages` (agent/pre-step संदेश) और `tools` (टूल परिणाम पाठ)। स्ट्रिंग या array स्वीकार करता है, जैसे `[messages, tools]` |
 | `registerCommand` | `true` | `/mask` कमांड पंजीकृत करें |
 | `registerTools` | `true` | `mask_test` टूल पंजीकृत करें |
 | `persistRestoreTable` | `true` | तालिका को `dsh_mask` डोमेन में सहेजें |

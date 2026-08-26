@@ -89,7 +89,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 | `enabled` | `true` | 总开关；`false` 卸载监听器、`/mask` 命令与 `mask_test` 工具 |
 | `mode` | `regex` | 检测模式；只有 `regex` 实现（`regex+ner` 姓名/地址识别预留并响亮失败） |
 | `entities` | `[phone, email, id-card, bank-card, key]` | 要遮罩的 PII 类型；`ip` 也支持正则（可选），`person`/`address` 需要 NER |
-| `scope` | `messages` | 遮罩作用域；只有 `messages`（agent 消息）实现（`tools` 入参遮罩预留） |
+| `scope` | `[messages]` | 遮罩作用域；`messages` 遮罩 agent/pre-step 消息，`tools` 遮罩 tools/post-execute 工具结果。可为字符串或数组，如 `[messages, tools]` |
 | `registerCommand` | `true` | 注册 `/mask` 命令 |
 | `registerTools` | `true` | tools 服务存在时注册 `mask_test` 工具 |
 | `persistRestoreTable` | `true` | 把恢复表持久化到受控 `dsh_mask` 领域（`false` = 仅内存） |

@@ -83,7 +83,7 @@ Todas las opciones son campos Schemastery `Config` (modificables desde cordis.ym
 | `enabled` | `true` | Interruptor maestro |
 | `mode` | `regex` | Solo `regex` implementado (`regex+ner` reservado) |
 | `entities` | `[phone, email, id-card, bank-card, key]` | Tipos de PII a enmascarar; `ip` opt-in, `person`/`address` requieren NER |
-| `scope` | `messages` | Solo `messages` implementado |
+| `scope` | `[messages]` | Superficies: `messages` (mensajes agent/pre-step) y `tools` (texto de resultados de herramientas). Acepta una cadena o un array, p. ej. `[messages, tools]` |
 | `registerCommand` | `true` | Registra el comando `/mask` |
 | `registerTools` | `true` | Registra la herramienta `mask_test` |
 | `persistRestoreTable` | `true` | Persiste la tabla en el dominio `dsh_mask` |
