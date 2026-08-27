@@ -80,6 +80,8 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 - **tarball 通道**：在本仓库 `pnpm pack`，再 `dsh plugin --profile web add ./dsh-mask-<version>.tgz`。
 - **卸载**：`dsh plugin --profile web remove dsh-mask`（或从 profile patch 删掉该行）。
 
+`dsh-mask` 不再自带 storage 栈。已组合该栈的 profile（`web` profile 通过 `@deepseek-ai/dsh-web-app` 提供）自带 `storageDomain`，持久化开箱即用。未组合 storage 的 bare profile 仍可正常挂载与遮罩，但恢复表仅存内存（重启丢失）——请在 profile patch 中组合 storage 栈，或将 `persistRestoreTable` 设为 `false`。
+
 ## Configuration
 
 所有可调项都是 Schemastery `Config` 字段（可从 cordis.yml 覆盖）。按 id 覆盖会替换整行——请重述所有需要的键。`cordis.patch.yml` 逐键内联注释。

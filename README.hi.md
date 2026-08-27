@@ -74,6 +74,8 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 - **tarball चैनल**: `pnpm pack` फिर `dsh plugin --profile web add ./dsh-mask-<version>.tgz`।
 - **अनइंस्टॉल**: `dsh plugin --profile web remove dsh-mask`।
 
+`dsh-mask` अब storage स्टैक बंडल नहीं करता। जो प्रोफ़ाइल इसे पहले से रचते हैं (`web` प्रोफ़ाइल `@deepseek-ai/dsh-web-app` के ज़रिए करती है) वे `storageDomain` देते हैं, इसलिए persistence तुरंत काम करता है। बिना storage वाले bare प्रोफ़ाइल में प्लगइन फिर भी माउंट होता है और मास्क करता है, पर restore तालिका केवल मेमोरी में रहती है (रीस्टार्ट पर खो जाती है): अपने प्रोफ़ाइल पैच में storage स्टैक रचें, या `persistRestoreTable: false` करें।
+
 ## Configuration
 
 सभी विकल्प Schemastery `Config` फ़ील्ड हैं (cordis.yml से बदले जा सकते हैं)। `cordis.patch.yml` हर कुंजी का दस्तावेज़ देता है।

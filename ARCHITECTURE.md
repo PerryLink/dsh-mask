@@ -6,7 +6,7 @@
 
 ## Roles
 
-- **Consumes public services only**: `commands`, `storageDomain` (hard `inject`); `tools` (registered via `ctx.inject(['tools'], …)` when present). The masking seam is the `agent/pre-step` waterfall.
+- **Consumes public services only**: `commands` (hard `inject`); `storageDomain` (optional `ctx.get` — missing means a memory-only restore table with a one-time warning); `tools` (registered via `ctx.inject(['tools'], …)` when present). The masking seam is the `agent/pre-step` waterfall.
 - **`lib/` is zero-DSH-dependency**: services are wired only at the boundary in `index.mjs`; `lib/` depends only on `node:` built-ins (the single sanctioned exception is `lib/domain.mjs`, which imports `zod` and `@deepseek-ai/dsh-storage-domain` because the domain record schema is a persistence-boundary validator).
 
 ## Module map
@@ -58,7 +58,7 @@ The detector is a pluggable Provider: `Stripper` and `createStripper` accept an 
 
 ## Storage domain
 
-The `dsh_mask` domain has one `restore` table keyed by session id. Its record holds `entries: { placeholder: original }` plus `updatedAt`. This is the only place plaintext PII is stored, and only when `persistRestoreTable: true`; the `Stripper` keeps a bounded in-memory copy (`maxRestoreEntriesPerSession`, `maxSessions` with LRU eviction).
+The `dsh_mask` domain has one `restore` table keyed by session id. Its record holds `entries: { placeholder: original }` plus `updatedAt`. This is the only place plaintext PII is stored, and only when `persistRestoreTable: true`; the `Stripper` keeps a bounded in-memory copy (`maxRestoreEntriesPerSession`, `maxSessions` with LRU eviction). `storageDomain` is an optional service: the bundle patch inserts only the `mask` row, so a profile that already composes the storage stack (`web`, via `@deepseek-ai/dsh-web-app`) provides it, while a bare profile without it gets a memory-only restore table (`persistRestoreTable` is a no-op with a one-time warning).
 
 ## Safety boundaries
 

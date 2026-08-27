@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- The bundle patch no longer inserts the storage stack (`@deepseek-ai/dsh-storage` / `dsh-storage-json` / `dsh-storage-domain`), which crashed `dsh web` with `duplicate loader entry id: storage` because `@deepseek-ai/dsh-web-app` already composes the same ids (issue #2). `storageDomain` is now an optional service: a profile that composes the storage stack provides it, while a bare profile without it degrades to a memory-only restore table with a one-time warning instead of hanging on `pending (waiting for service: storageDomain)`.
+
 ## [0.2.0] - 2026-08-26
 
 ### Added

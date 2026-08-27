@@ -12,8 +12,9 @@
 // - 表面：/mask 命令（status|on|off|restore|help）与 mask_test 工具（试跑一段
 //   文本看替换效果，绝不回显原文）。
 //
-// 只消费公开服务：commands/storageDomain（inject 声明），tools 经 ctx.inject
-// 可选注册；lib/ 零 DSH 依赖，服务只在边界接线。
+// 只消费公开服务：commands（inject 声明）、storageDomain（ctx.get 可选，缺失时
+// 恢复表降级为纯内存并一次性告警），tools 经 ctx.inject 可选注册；lib/ 零 DSH
+// 依赖，服务只在边界接线。
 
 import { Context } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
@@ -41,8 +42,12 @@ import { dshMaskDomainSpec } from './lib/domain.mjs'
 
 export const name = PLUGIN_NAME
 
-/** 必需服务：缺失即加载失败（响亮）。 */
-export const inject = ['commands', 'storageDomain']
+/**
+ * 必需服务：缺失即加载失败（响亮）。storageDomain 是可选服务（apply 内
+ * ctx.get 读取，缺失时恢复表降级为纯内存），不再作为 inject 硬依赖——否则
+ * bare profile 会卡在 `pending (waiting for service: storageDomain)`。
+ */
+export const inject = ['commands']
 
 /**
  * 宿主 append 是否盖章 ignorable 信封（运行时能力探测）。
@@ -273,13 +278,21 @@ export function apply(ctx, config = {}) {
   const warn = (message) => logger.warn(message)
   const eventGate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, probeIgnorableAppend())
 
-  // --- 恢复表：ctx.storageDomain 领域 'dsh_mask'（异步打开，操作路径 await）。
-  /** @type {Promise<any>} 打开的领域（含 table/close），RestoreStore 按需消费。 */
-  const domainPromise = ctx.storageDomain.open(dshMaskDomainSpec).then((domain) => {
-    ctx.effect(() => () => { void domain.close() }, `${PLUGIN_NAME}.domain.close`)
-    return domain
-  })
-  domainPromise.catch(() => {}) // 消费方各自处理拒绝；此处仅避免未处理拒绝告警。
+  // --- 恢复表：可选 storageDomain 的 'dsh_mask' 领域（异步打开，操作路径 await）。
+  // storageDomain 缺失（bare profile 未组合存储栈）时降级为纯内存恢复表，
+  // persistRestoreTable 视为 no-op 并一次性告警（可选 seam 失败关闭，绝不卡 pending）。
+  const storageDomain = ctx.get('storageDomain')
+  /** @type {Promise<any>|null} 打开的领域（含 table/close），RestoreStore 按需消费。 */
+  let domainPromise = null
+  if (storageDomain !== undefined) {
+    domainPromise = storageDomain.open(dshMaskDomainSpec).then((domain) => {
+      ctx.effect(() => () => { void domain.close() }, `${PLUGIN_NAME}.domain.close`)
+      return domain
+    })
+    domainPromise.catch(() => {}) // 消费方各自处理拒绝；此处仅避免未处理拒绝告警。
+  } else if (resolved.persistRestoreTable) {
+    warn('storageDomain not composed: the restore table is memory-only (lost on restart). Compose the storage stack (storage / storage-json / storage-domain) in the profile, or set persistRestoreTable: false.')
+  }
 
   const store = new RestoreStore({
     entities: resolved.entities,

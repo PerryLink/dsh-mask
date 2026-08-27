@@ -2,20 +2,16 @@
 #
 # Every key below is a Config field (Schemastery schema); invalid values fail
 # the profile load loudly. See README.md "Configuration" for the full table.
+#
+# This patch inserts only the `mask` row. It deliberately does NOT insert the
+# storage stack (`storage` / `storage-json` / `storage-domain`): a profile that
+# already composes it — the `web` profile does, via @deepseek-ai/dsh-web-app —
+# would collide on the duplicate loader entry id `storage` and refuse to boot
+# (issue #2). The plugin treats `storageDomain` as an optional service: when
+# the profile provides it, the restore table persists to the `dsh_mask` domain;
+# on a profile without storage, the restore table is memory-only and
+# `persistRestoreTable: true` is a no-op with a one-time warning.
 - insert:
-    - id: storage
-      name: '@deepseek-ai/dsh-storage'
-
-    - id: storage-json
-      name: '@deepseek-ai/dsh-storage-json'
-      config:
-        root: !!js dshHomePath('storages')
-
-    - id: storage-domain
-      name: '@deepseek-ai/dsh-storage-domain'
-      config:
-        backend: json
-
     - id: mask
       name: dsh-mask
       config:
@@ -47,7 +43,9 @@
         registerCommand: true
         registerTools: true
         # Persist the placeholder->original restore table to the controlled
-        # dsh_mask storage domain (false = memory only, lost on restart).
+        # dsh_mask storage domain (false = memory only, lost on restart). A
+        # no-op with a one-time warning when the profile composes no storage
+        # stack (storageDomain service absent).
         persistRestoreTable: true
         # Per-session cap on restore entries; the oldest placeholders are
         # evicted first (their responses can no longer be restored).

@@ -74,6 +74,8 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 - **Canal tarball**: `pnpm pack` e depois `dsh plugin --profile web add ./dsh-mask-<version>.tgz`.
 - **Desinstalar**: `dsh plugin --profile web remove dsh-mask`.
 
+`dsh-mask` não inclui mais a pilha de armazenamento. Perfis que já a compõem (o perfil `web` o faz, via `@deepseek-ai/dsh-web-app`) fornecem `storageDomain`, então a persistência funciona imediatamente. Em um perfil bare sem armazenamento o plugin monta e mascara mesmo assim, mas a tabela é só em memória (perdida ao reiniciar): componha a pilha de armazenamento no seu patch de perfil, ou defina `persistRestoreTable: false`.
+
 ## Configuration
 
 Todas as opções são campos Schemastery `Config` (alteráveis via cordis.yml). O `cordis.patch.yml` documenta cada chave.

@@ -196,3 +196,27 @@ test('disabled plugin registers nothing', () => {
   assert.equal(mock.tools.length, 0)
   assert.equal(mock.listeners.size, 0)
 })
+
+test('apply mounts without storageDomain and degrades to a memory-only restore table', async () => {
+  // bare profile：未组合存储栈 → storageDomain 服务缺失，插件仍挂载且遮罩/还原可用。
+  const mock = createMockCtx({ storageDomain: false })
+  apply(mock.ctx, {}) // persistRestoreTable 默认 true，缺失领域时视为 no-op。
+  assert.equal(mock.commands.length, 1)
+  assert.equal(mock.commands[0].name, 'mask')
+  assert.equal(mock.tools.length, 1)
+  assert.equal(mock.tools[0].name, 'mask_test')
+
+  const session = makeSession({ id: 's1' })
+  const agent = makeAgent(session)
+  const messages = [makeTextMessage('请联系 13812345678')]
+  const decision = await mock.waterfall(
+    'agent/pre-step',
+    { agent, messages, turn: 1, step: 1, signal: new AbortController().signal },
+    () => Promise.resolve({ kind: 'enter', messages }),
+  )
+  assert.ok(!JSON.stringify(decision.messages).includes('13812345678'), 'masking still works without storageDomain')
+
+  const restored = await mock.commands[0].handler({ agent, rawInput: 'restore <PHONE_1>' })
+  assert.equal(restored.kind, 'success')
+  assert.ok(restored.text.includes('13812345678'), 'restore works from the in-memory mapping')
+})

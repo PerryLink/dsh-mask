@@ -16,6 +16,9 @@ export function createMockCtx(opts = {}) {
   const listeners = new Map()
   const cleanups = []
   const domainData = opts.domainData ?? { restore: new Map() }
+  // storageDomain 缺省提供；opts.storageDomain === false 时省略（模拟 bare profile
+  // 未组合存储栈，验证插件降级为纯内存恢复表仍可挂载）。
+  const hasStorageDomain = opts.storageDomain !== false
 
   const mockDomain = {
     table(name) {
@@ -80,11 +83,15 @@ export function createMockCtx(opts = {}) {
         }
       },
     },
-    storageDomain: {
-      open() {
-        return Promise.resolve(mockDomain)
-      },
-    },
+    ...(hasStorageDomain
+      ? {
+          storageDomain: {
+            open() {
+              return Promise.resolve(mockDomain)
+            },
+          },
+        }
+      : {}),
     logger() {
       return { warn() {}, error() {}, info() {}, debug() {} }
     },
@@ -105,7 +112,7 @@ export function createMockCtx(opts = {}) {
   ctx.root = ctx
   services.set('tools', ctx.tools)
   services.set('commands', ctx.commands)
-  services.set('storageDomain', ctx.storageDomain)
+  if (hasStorageDomain) services.set('storageDomain', ctx.storageDomain)
   return {
     ctx,
     services,

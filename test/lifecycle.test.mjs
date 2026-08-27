@@ -91,7 +91,7 @@ test('module carries no default export and Loader unwrap round-trips the namespa
   const unwrapped = loader.unwrapExports(plugin)
   assert.equal(unwrapped, plugin)
   assert.equal(unwrapped.name, 'mask')
-  assert.deepEqual(unwrapped.inject, ['commands', 'storageDomain'])
+  assert.deepEqual(unwrapped.inject, ['commands'])
   assert.ok(unwrapped.Config !== undefined)
   assert.equal(typeof unwrapped.apply, 'function')
 })
