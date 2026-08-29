@@ -1,6 +1,7 @@
 <div align="center">
 
 # dsh-mask
+- **Canal 1024 store**: `npm i -g dsh1024` una vez, luego `dsh1024 plugin --profile web add dsh-mask` (cuenta para el ranking de instalaciones de [deepseek1024.com](https://deepseek1024.com)).
 
 **Middleware de enmascaramiento de PII para DeepSeek Harness: anonimiza los datos personales antes de que lleguen al modelo y los restaura en la capa de visualización.**
 

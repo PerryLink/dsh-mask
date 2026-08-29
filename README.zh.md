@@ -1,6 +1,7 @@
 <div align="center">
 
 # dsh-mask
+- **1024 商店渠道**：先 `npm i -g dsh1024`，再 `dsh1024 plugin --profile web add dsh-mask`（计入 [deepseek1024.com](https://deepseek1024.com) 安装排行）。
 
 **面向 DeepSeek Harness 的 PII 脱敏中间件——在个人数据进入模型前匿名化，在展示层还原。**
 
