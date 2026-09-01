@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Upgrade the `@deepseek-ai/dsh-*` dev dependencies from `0.1.2-alpha.2` to `0.1.2-alpha.3` (peer ranges stay `>=0.1.0-rc.8 <0.2.0`; the `dsh-commands` peer exact pin is widened to the same range), align the `@deepseek-ai/cordis` / `@deepseek-ai/schemastery` carets to `^4.0.2` / `^3.18.2`, refresh `dshWorkshop.compatibility.dshVersions` and the five-language README version notes to `0.1.2-alpha.3`, and re-verify the adaptive audit gate on alpha.3 (unchanged: the gate stays closed).
+
 ## [0.2.1] - 2026-08-27
 
 ### Fixed

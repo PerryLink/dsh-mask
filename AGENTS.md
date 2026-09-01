@@ -20,7 +20,7 @@ cordis.patch.yml      bundle declaration (insert mask); every Config key documen
 pnpm-workspace.yaml   nearest-workspace root (isolates this repo from the surrounding
                       deepseek-harness workspace during development)
 package.json          npm metadata; files whitelist = published content
-tsconfig.check.json   tsc --checkJs typecheck gate against the published rc.2 peers
+tsconfig.check.json   tsc --checkJs typecheck gate against the published 0.1.2-alpha.3 peers
 .github/workflows/    CI (3 OS × 2 Node), monthly compat probe, v* npm release
 README.md             English primary (GitHub default page; source of truth)
 README.{zh,es,pt,hi}.md  translations, top switcher, updated in the same commit
@@ -38,7 +38,7 @@ upstream/             ❌ read-only reference clone (Pii-Stripper-Middleware);
 - **Optional seams fail closed.** `tools` registers only when present (`ctx.inject(['tools'], …)`); `agent/pre-step` masking is a pure-host seam that never blocks a step (it always calls `next()`).
 - **Model-visible ⟺ logged (placeholder form).** The masked messages are what get appended as `user/message`, so the log reconstructs exactly what the model saw; the plaintext stays in the restore table.
 - **Plaintext never enters the session log.** The `mask/applied` audit event carries counts + type distribution only; the mapping never reaches the log. `lib/sanitize.mjs` redacts PII/secrets before any display or log text.
-- **Session-event adaptive gate is mandatory.** `mask/applied` is declared in `types.d.ts`, but runtime appends only when the host records the type or supports the `ignorable` envelope (`probeIgnorableAppend`). On `0.1.1-rc.2` neither is true (the probe returns false), so the gate stays closed so sessions keep loading. Do not remove the gate "just because" — see `ARCHITECTURE.md`.
+- **Session-event adaptive gate is mandatory.** `mask/applied` is declared in `types.d.ts`, but runtime appends only when the host records the type or supports the `ignorable` envelope (`probeIgnorableAppend`). On `0.1.2-alpha.3` neither is true (the probe returns false), so the gate stays closed so sessions keep loading. Do not remove the gate "just because" — see `ARCHITECTURE.md`.
 - **Loud misconfiguration.** Unimplemented `mode` (`regex+ner`), `scope` (`tools`), NER-only entities, unknown entities, and out-of-bounds numbers fail `resolveConfig` at load.
 - **Waterfall discipline.** The `agent/pre-step` listener always calls `next()` and only replaces the returned decision's messages; it never short-circuits a step.
 - **No build step.** Pure ESM: `index.mjs` + `lib/` are the shipped artifacts. There is no `build`/`prepare` script — keep it that way; do not introduce a bundler.
@@ -56,11 +56,11 @@ pnpm run check:readmes                              # five-language README consi
 pnpm pack                                           # the published tarball
 ```
 
-`typecheck` resolves `@deepseek-ai/*` from this repo's own `node_modules` (the pinned `0.1.1-rc.2` peers installed by pnpm). The repo must be its own pnpm workspace (`pnpm-workspace.yaml`) so it never resolves into a surrounding `deepseek-harness` checkout's node_modules.
+`typecheck` resolves `@deepseek-ai/*` from this repo's own `node_modules` (the pinned `0.1.2-alpha.3` peers installed by pnpm). The repo must be its own pnpm workspace (`pnpm-workspace.yaml`) so it never resolves into a surrounding `deepseek-harness` checkout's node_modules.
 
 ## Release
 
-Version is currently `0.1.3`. For a new version: bump `package.json#version`, stamp the CHANGELOG `[Unreleased]` section into `## [<x.y.z>] - <UTC date>`, re-run the full gate, commit `chore(release): <x.y.z>`, and `git tag -a v<x.y.z>`. `git push origin main --follow-tags` triggers `.github/workflows/release.yml`, which re-runs the gate, publishes to npm with provenance (skipped without the `NPM_TOKEN` secret), and creates the GitHub Release from the stamped CHANGELOG section. Never push a tag for a version already on the registry.
+Version is currently `0.2.1`. For a new version: bump `package.json#version`, stamp the CHANGELOG `[Unreleased]` section into `## [<x.y.z>] - <UTC date>`, re-run the full gate, commit `chore(release): <x.y.z>`, and `git tag -a v<x.y.z>`. `git push origin main --follow-tags` triggers `.github/workflows/release.yml`, which re-runs the gate, publishes to npm with provenance (skipped without the `NPM_TOKEN` secret), and creates the GitHub Release from the stamped CHANGELOG section. Never push a tag for a version already on the registry.
 
 ## Docs
 

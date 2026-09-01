@@ -25,7 +25,7 @@
 
 | Superfície | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.1-rc.2` 0.1.2-alpha.2 (adaptado em 2026-08-31): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. |
+| Harness | DeepSeek Harness `0.1.2-alpha.3` (adaptado em 2026-09-01): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Onde o DSH rodar (host puro, regex sem dependências; sem metade de navegador) |
 | Modelo | Modelos de texto totalmente suportados |
@@ -121,7 +121,7 @@ Todas as opções são campos Schemastery `Config` (alteráveis via cordis.yml).
 
 - **Somente regex.** `person` e `address` exigem um reconhecedor NER externo; falham ao carregar. Coberto de série: telefone, e-mail, documento, cartão, chave e IP (opt-in).
 - **A restauração visual precisa de uma metade de cliente.** Mascarar é host-side; desmascarar bolhas na UI é uma função de navegador que esta forma host puro não inclui. A tabela e `restore()` são o seam host-side completo.
-- **Eventos em `0.1.1-rc.2`.** O host ainda não registra `mask/*`, então os appends de auditoria são omitidos (sessões continuam carregando).
+- **Eventos em `0.1.2-alpha.3`.** O host ainda não registra `mask/*`, então os appends de auditoria são omitidos (sessões continuam carregando).
 
 ## Development
 
