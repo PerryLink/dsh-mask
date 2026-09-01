@@ -25,7 +25,7 @@
 
 | Superficie | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.1-rc.2` |
+| Harness | DeepSeek Harness `0.1.1-rc.2` 0.1.2-alpha.2 (adaptado el 2026-08-31): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Donde corra DSH (host puro, regex sin dependencias; sin mitad de navegador) |
 | Modelo | Modelos de texto totalmente soportados |

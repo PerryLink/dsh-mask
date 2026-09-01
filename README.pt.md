@@ -25,7 +25,7 @@
 
 | Superfície | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.1-rc.2` |
+| Harness | DeepSeek Harness `0.1.1-rc.2` 0.1.2-alpha.2 (adaptado em 2026-08-31): o envelope de sessão mantém seu campo ignorable apenas para compatibilidade de leitura de logs armazenados - o Session.append ainda não consegue estampá-lo, então o comportamento da porta não muda. |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Onde o DSH rodar (host puro, regex sem dependências; sem metade de navegador) |
 | Modelo | Modelos de texto totalmente suportados |
