@@ -74,8 +74,8 @@ test('audit event payload carries counts only, never plaintext', () => {
     replaced: 3,
     distribution: { PHONE: 1, EMAIL: 2 },
   }, gate, () => {})
-  assert.equal(session.snapshotEvents().length, 1)
-  const data = session.snapshotEvents()[0].data
+  assert.equal(session.events.length, 1)
+  const data = session.events[0].data
   assert.deepEqual(data, { sessionId: session.id, replaced: 3, distribution: { PHONE: 1, EMAIL: 2 } })
   assert.ok(!JSON.stringify(data).includes('13812345678'))
 })
@@ -111,7 +111,7 @@ test('apply masks PII at agent/pre-step (waterfall delegates via next)', async (
   assert.ok(text.includes('<PHONE_1>'))
   assert.ok(text.includes('<EMAIL_1>'))
   // rc.2 门均关闭（probe 返回 false）：审计事件不落会话（会话仍可加载）；模型可见内容（占位符）已可自日志重建。
-  assert.equal(session.snapshotEvents().filter((e) => e.type === 'mask/applied').length, 0)
+  assert.equal(session.events.filter((e) => e.type === 'mask/applied').length, 0)
 })
 
 test('apply does not mask when nothing to mask (returns downstream decision)', async () => {
