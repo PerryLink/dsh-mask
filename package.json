@@ -1,7 +1,7 @@
 {
   "name": "dsh-mask",
   "description": "PII masking middleware for DeepSeek Harness: anonymize names, phones, emails, ID cards, bank cards, keys, and addresses to placeholders before they reach the model, restore them at the display layer, keep the restore table only in memory and a controlled storage domain, never log plaintext, and expose /mask and the mask_test tool",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PerryLink/dsh-mask.git"
@@ -99,7 +99,8 @@
   "dependencies": {
     "zod": "^4.4.3"
   },
-  "devDependencies": {"@deepseek-ai/dsh-attachment": "0.1.2-rc.1", 
+  "devDependencies": {
+    "@deepseek-ai/dsh-attachment": "0.1.2-rc.1",
     "@deepseek-ai/cordis": "^4.0.2",
     "@deepseek-ai/cordis-plugin-include": "^1.0.7",
     "@deepseek-ai/cordis-plugin-loader": "^1.0.3",
