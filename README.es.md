@@ -25,7 +25,7 @@
 
 | Superficie | Estado |
 |---|---|
-| Harness | DeepSeek Harness `0.1.2-alpha.5` (adaptado el 2026-09-02): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. |
+| Harness | DeepSeek Harness `0.1.2-rc.1` (adaptado el 2026-09-02): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Donde corra DSH (host puro, regex sin dependencias; sin mitad de navegador) |
 | Modelo | Modelos de texto totalmente soportados |
@@ -121,7 +121,7 @@ Todas las opciones son campos Schemastery `Config` (modificables desde cordis.ym
 
 - **Solo regex.** `person` y `address` requieren un reconocedor NER externo; fallan al cargar. Cubierto de serie: teléfono, correo, documento, tarjeta, clave e IP (opt-in).
 - **La restauración visual necesita una mitad de cliente.** Enmascarar es host-side; desenmascarar burbujas en la UI es una función de navegador que esta forma host puro no incluye. La tabla y `restore()` son el seam host-side completo.
-- **Eventos en `0.1.2-alpha.5`.** El host aún no registra `mask/*`, así que los appends de auditoría se omiten (las sesiones siguen cargando).
+- **Eventos en `0.1.2-rc.1`.** El host aún no registra `mask/*`, así que los appends de auditoría se omiten (las sesiones siguen cargando).
 
 ## Development
 
