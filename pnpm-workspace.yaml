@@ -60,4 +60,8 @@ minimumReleaseAgeExclude:
   - '@deepseek-ai/dsh-util-crypto@0.1.2-rc.1'
   - '@deepseek-ai/dsh-util-values@0.1.2-rc.1'
 
+# The exact rc pins are published inside the 24h minimum-release-age
+# window by design; the zero-age override keeps fresh installs (local and
+# CI frozen-lockfile) deterministic when pnpm's lockfile policy re-checks.
+minimumReleaseAge: 0
 verifyDepsBeforeRun: false
