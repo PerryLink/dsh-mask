@@ -76,6 +76,9 @@ export function probeIgnorableAppend() {
 }
 
 /**
+ * Service Definition — 服务契约：下方 Config schema 与 makeMaskTestTool 的工具 schema。
+ */
+/**
  * 插件配置（Schemastery，全部可 cordis.yml 覆盖；无硬编码 tunable）。
  * @typedef {import('./types.d.ts').Config} Config
  */
@@ -364,6 +367,7 @@ export function apply(ctx, config = {}) {
     })
   }
 
+  // Service Provider — 实现注册处：ctx.commands.register（/mask 命令）与 ctx.inject(['tools']) 的工具注册（下方两段）。
   // --- /mask 命令（Consumer）。
   if (resolved.registerCommand) {
     ctx.commands.register({
