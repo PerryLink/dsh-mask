@@ -23,7 +23,7 @@ package.json          npm metadata; files whitelist = published content
 tsconfig.check.json   tsc --checkJs typecheck gate against the published 0.1.2-rc.1 peers
 .github/workflows/    CI (3 OS × 2 Node), monthly compat probe, v* npm release
 README.md             English primary (GitHub default page; source of truth)
-README.{zh,es,pt,hi}.md  translations, top switcher, updated in the same commit
+README-{zh,es,pt,hi}.md  translations, top switcher, updated in the same commit
 ARCHITECTURE.md       seam roles + module map + design decisions
 CHANGELOG.md          Keep a Changelog, [Unreleased] at the top
 SECURITY.md           private vulnerability reporting + scope
