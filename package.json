@@ -1,7 +1,7 @@
 {
   "name": "dsh-mask",
   "description": "PII masking middleware for DeepSeek Harness: regex-detect and replace phones, emails, ID cards, bank cards, keys, and (opt-in) IPs with placeholders before they reach the model, keep the restore table host-side (memory plus a controlled storage domain, never the session log) with the /mask restore command and the exported RestoreStore seam, and expose /mask status and the mask_test tool. Name and address recognition needs an external NER recognizer, which this pure-host form does not bundle: mode \"regex+ner\" and the person/address entities fail loudly at load. The phone and ID-card detectors match mainland-China formats only.",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PerryLink/dsh-mask.git"
