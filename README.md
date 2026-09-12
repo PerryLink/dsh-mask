@@ -4,7 +4,7 @@
 - **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-mask` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
 [![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-mask)
 
-**PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, restore it at the display layer.**
+**PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, keep it reversible host-side.**
 
 *Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.*
 
@@ -34,9 +34,9 @@
 
 ## What you get
 
-`dsh-mask` anonymizes personal data **at the model boundary** — before a message reaches the model — and keeps a restore table so placeholders can be mapped back to the originals at the display layer:
+`dsh-mask` anonymizes personal data **at the model boundary** — before a message reaches the model — and keeps a restore table host-side so placeholders stay reversible:
 
-- **Request-time masking** — `agent/pre-step` messages are rewritten so phones, emails, ID cards, bank cards, keys, and IPs (each opt-in) become `<PHONE_1>`-style placeholders. The masked text is what gets logged and sent to the model.
+- **Request-time masking** — `agent/pre-step` messages are rewritten so phones, emails, ID cards, bank cards, and keys (on by default) and IPs (opt-in) become `<PHONE_1>`-style placeholders. The masked text is what gets logged and sent to the model.
 - **Restore table** — the `placeholder → original` map lives only in memory and a controlled storage domain (`dsh_mask`); the plaintext never enters the session log.
 - **Audit, not plaintext** — the `mask/applied` session event records only "replaced N values + type distribution", never the original text or the mapping.
 - **`/mask` command** — `status` (counts + distribution), `on`/`off` (runtime toggle), `restore <text>` (unmap placeholders), `help`.
@@ -142,7 +142,8 @@ Example override in your profile patch:
 ## Known limitations
 
 - **Regex only.** Name (`person`) and address (`address`) recognition needs an external NER recognizer, which the pure-host zero-dependency form does not bundle; `mode: regex+ner` and those entities fail loudly at load. The PII types covered out of the box are phone, email, ID card, bank card, key, and (opt-in) IP.
-- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship; the restore table and `restore()` are the complete host-side seam a client plugin would consume, and `/mask restore` covers interactive needs today.
+- **Region-specific patterns.** The `phone` and `id-card` detectors match mainland-China formats only: `phone` is `1[3-9]` followed by nine digits, and `id-card` is an 18-character Chinese resident ID (17 digits plus a digit or `X`). Phone numbers and national identifiers from other countries are not detected. `email`, `ip`, and `key` are region-agnostic; `bank-card` accepts any 16-19 digit run at a lower confidence score.
+- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command and the `maskClientEnabled` config key is a placeholder that nothing reads yet.
 - **Session events on `0.1.2-rc.1`.** The harness does not yet record `mask/*` event types, and its `Session.append` does not stamp the `ignorable` envelope, so on alpha.3 the session-log audit appends are skipped (sessions keep loading); the plugin enables them automatically once a host records the types or supports the `ignorable` envelope.
 
 ## Development

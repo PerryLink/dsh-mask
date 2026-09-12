@@ -2,7 +2,7 @@
 
 ## Overview
 
-`dsh-mask` anonymizes PII at the model boundary: it rewrites the messages that enter a step so that phones, emails, ID cards, bank cards, keys, and IPs become `<TYPE_N>` placeholders, and it keeps a `placeholder → original` restore table so those placeholders can be mapped back at the display layer. The hard invariant is that **the plaintext never enters the session log** — the masked form is what gets logged and sent to the model, so model-visible content reconstructs from the log in placeholder form.
+`dsh-mask` anonymizes PII at the model boundary: it rewrites the messages that enter a step so that phones, emails, ID cards, bank cards, keys, and IPs become `<TYPE_N>` placeholders, and it keeps a `placeholder → original` restore table host-side so those placeholders stay reversible. The restore surface this form ships is the `/mask restore <text>` command plus the exported `RestoreStore` seam; automatically mapping placeholders back in the client UI is the browser half this pure-host form does not ship (see `README.md` Known limitations). The hard invariant is that **the plaintext never enters the session log** — the masked form is what gets logged and sent to the model, so model-visible content reconstructs from the log in placeholder form.
 
 ## Roles
 

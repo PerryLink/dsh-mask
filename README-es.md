@@ -121,7 +121,8 @@ Todas las opciones son campos Schemastery `Config` (modificables desde cordis.ym
 ## Known limitations
 
 - **Solo regex.** `person` y `address` requieren un reconocedor NER externo; fallan al cargar. Cubierto de serie: teléfono, correo, documento, tarjeta, clave e IP (opt-in).
-- **La restauración visual necesita una mitad de cliente.** Enmascarar es host-side; desenmascarar burbujas en la UI es una función de navegador que esta forma host puro no incluye. La tabla y `restore()` son el seam host-side completo.
+- **Patrones específicos de región.** Los detectores `phone` e `id-card` solo reconocen formatos de China continental: `phone` es `1[3-9]` seguido de nueve dígitos, e `id-card` es un documento de residente chino de 18 caracteres (17 dígitos más un dígito o `X`). Los teléfonos y documentos de otros países no se detectan. `email`, `ip` y `key` no dependen de la región; `bank-card` acepta cualquier secuencia de 16-19 dígitos con menor confianza.
+- **La restauración visual necesita una mitad de cliente.** Enmascarar es host-side; desenmascarar burbujas en la UI es una función de navegador que esta forma host puro no incluye. El host conserva la tabla y el seam `RestoreStore` exportado (sus métodos piden un id de sesión), así que una futura mitad de cliente debe consumirlos mediante un remoto del host, no directamente; hoy la superficie de desenmascarado es el comando `/mask restore <text>`.
 - **Eventos en `0.1.2-rc.1`.** El host aún no registra `mask/*`, así que los appends de auditoría se omiten (las sesiones siguen cargando).
 
 ## Development

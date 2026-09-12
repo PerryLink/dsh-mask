@@ -139,7 +139,8 @@ profile patch 覆盖示例：
 ## Known limitations
 
 - **仅正则。** 姓名（`person`）与地址（`address`）识别需要外部 NER 识别器，纯 host 零依赖形态未捆绑；`mode: regex+ner` 与这些实体在加载期响亮失败。开箱即用覆盖电话、邮箱、身份证、银行卡、密钥与（可选）IP。
-- **展示层还原需要浏览器半。** 遮罩完全在 host 侧，但客户端 UI 中透明还原助手气泡属于浏览器半功能，本纯 host 形态未交付；恢复表与 `restore()` 是供客户端插件消费的完整 host 侧 seam，交互需求现由 `/mask restore` 覆盖。
+- **正则具地域局限。** `phone` 与 `id-card` 只匹配中国大陆格式：`phone` 为 `1[3-9]` 加九位数字，`id-card` 为 18 位中国居民身份证（17 位数字加一位数字或 `X`）。其他国家的电话号码与证件号码不会被检出。`email`、`ip`、`key` 与地域无关；`bank-card` 以较低置信度接受任意 16-19 位数字串。
+- **展示层还原需要浏览器半。** 遮罩完全在 host 侧，但客户端 UI 中透明还原助手气泡属于浏览器半功能，本纯 host 形态未交付。host 侧保留恢复表与已导出的 `RestoreStore` seam（其方法需要会话 id），因此未来的客户端半需经 host 远程面间接消费，而非直接使用；当前的反遮罩入口是 `/mask restore <text>` 命令，`maskClientEnabled` 配置键目前是无人读取的占位符。
 - **`0.1.2-rc.1` 会话事件。** 宿主尚未收录 `mask/*` 事件类型，且其 `Session.append` 不盖章 `ignorable` 信封，因此 alpha.3 上会话日志审计 append 被跳过（会话仍可加载）；宿主收录类型或支持 `ignorable` 信封后自动开启。
 
 ## Development

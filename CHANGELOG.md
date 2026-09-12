@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Correct the package description: it claimed the plugin anonymizes "names … and addresses", which the pure-host form never did — `person` and `address` are NER-only entities and `mode: regex+ner` fails loudly at load (see `README.md` Known limitations, `ARCHITECTURE.md`, `SECURITY.md`). The description now states the regex-detectable set (phone, email, ID card, bank card, key, opt-in IP) and records the NER limitation. The false claim was the only one in the repository and was visible on the npm package page; a published version cannot be corrected retroactively, so this takes effect with the next release.
+- Correct the display-layer claim in the description and in all five READMEs. Both said the restore table lets placeholders be mapped back "at the display layer" / that "the restore table and `restore()` are the complete host-side seam a client plugin would consume". There is no display-layer restore: the browser half is not shipped, `index.mjs` exports no bare `restore()` (the seam is the `RestoreStore` class, whose methods take a session id), `RestoreStore` is a host-side class a browser half cannot consume directly, and `maskClientEnabled` is read into the resolved config but never used. The text now states what exists — the host-side table and `RestoreStore` seam, reached through a host remote by any future client half, with `/mask restore <text>` as today's unmasking surface.
+
+### Docs
+
+- Declare the region-specific scope of the built-in detectors in all five READMEs' Known limitations: `phone` matches mainland-China mobile numbers only (`1[3-9]` plus nine digits) and `id-card` matches the 18-character Chinese resident ID only, so other countries' phone numbers and national identifiers are not detected. `email`, `ip`, and `key` are region-agnostic; `bank-card` accepts any 16-19 digit run at a lower confidence score. The behaviour is unchanged — the limitation was simply undocumented.
+
 ## [0.2.9] - 2026-09-12
 
 ### Changed
