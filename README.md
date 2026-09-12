@@ -100,7 +100,7 @@ All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id
 | `persistRestoreTable` | `true` | Persist the restore table to the controlled `dsh_mask` storage domain (`false` = memory only) |
 | `maxRestoreEntriesPerSession` | `500` | Per-session restore entry cap (oldest evicted first) |
 | `maxSessions` | `1000` | In-memory session cap (least-recently-used evicted, mapping reloaded on demand) |
-| `maskClientEnabled` | `false` | Feature flag for the browser half "reveal" bubble (defensive; off by default until the live slot catalog verifies the target slot) |
+| `maskClientEnabled` | `false` | Feature flag for the browser half "reveal" bubble (defensive; off by default until the live slot catalog verifies the target slot). The key is schema-declared and validated, but no runtime code reads it yet, so it changes nothing until the browser half ships |
 
 Example override in your profile patch:
 
@@ -143,7 +143,7 @@ Example override in your profile patch:
 
 - **Regex only.** Name (`person`) and address (`address`) recognition needs an external NER recognizer, which the pure-host zero-dependency form does not bundle; `mode: regex+ner` and those entities fail loudly at load. The PII types covered out of the box are phone, email, ID card, bank card, key, and (opt-in) IP.
 - **Region-specific patterns.** The `phone` and `id-card` detectors match mainland-China formats only: `phone` is `1[3-9]` followed by nine digits, and `id-card` is an 18-character Chinese resident ID (17 digits plus a digit or `X`). Phone numbers and national identifiers from other countries are not detected. `email`, `ip`, and `key` are region-agnostic; `bank-card` accepts any 16-19 digit run at a lower confidence score.
-- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command and the `maskClientEnabled` config key is a placeholder that nothing reads yet.
+- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command, and the `maskClientEnabled` key is validated but read by no runtime code yet.
 - **Session events on `0.1.2-rc.1`.** The harness does not yet record `mask/*` event types, and its `Session.append` does not stamp the `ignorable` envelope, so on alpha.3 the session-log audit appends are skipped (sessions keep loading); the plugin enables them automatically once a host records the types or supports the `ignorable` envelope.
 
 ## Development
