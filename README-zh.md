@@ -26,7 +26,7 @@
 
 | 维度 | 状态 |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.1`（2026-09-09 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。已于 2026-09-10 针对 `dsh-v0.1.5-rc.1` master checkout 核验（全量门禁链 + profile 安装冒烟测试）。 |
+| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2`（2026-09-09 已适配）：会话信封保留 ignorable 字段但仅用于存量日志读取兼容——Session.append 仍无法盖章，门控行为不变。已于 2026-09-11 针对 `dsh-v0.1.5-rc.2` master checkout 核验（全量门禁链 + profile 安装冒烟测试）。 |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | 平台 | 任何 DSH 可运行处（纯 host、零依赖正则；无浏览器半） |
 | 模型 | 文本模型完全支持；无需额外模型能力 |
@@ -146,7 +146,7 @@ profile patch 覆盖示例：
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs（对照 0.1.5-rc.1 peers）
+pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs（对照 0.1.5-rc.2 peers）
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # 依赖 spec 均来自 registry
 pnpm run verify:artifacts                          # 发布文件齐全 + index.mjs 可 import

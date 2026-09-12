@@ -27,7 +27,7 @@
 
 | Surface | Status |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.5-rc.1` (adapted 2026-09-09): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-10 against the dsh-v0.1.5-rc.1 master checkout (full gate chain + profile install smoke). |
+| Harness | DeepSeek Harness `dsh-v0.1.5-rc.2` (adapted 2026-09-09): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-11 against the dsh-v0.1.5-rc.2 master checkout (full gate chain + profile install smoke). |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Platforms | Anywhere DSH runs (pure host, zero-dependency regex; no browser half) |
 | Model | Text models fully supported; no extra model capability required |
@@ -149,7 +149,7 @@ Example override in your profile patch:
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs against the published 0.1.5-rc.1 peers
+pnpm run typecheck && pnpm run typecheck:ci        # tsc --checkJs against the published 0.1.5-rc.2 peers
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # dependency specs resolve from the registry
 pnpm run verify:artifacts                          # shipped files present + index.mjs importable
