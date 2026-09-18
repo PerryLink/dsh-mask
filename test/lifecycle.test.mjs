@@ -131,3 +131,51 @@ test('disposing the contributing fiber removes /mask, mask_test and the pre-step
     await harness.ctx.fiber.dispose()
   }
 })
+
+// ---------------------------------------------------------------------------
+// A02 T1：域打开是异步的；effect 先注册，disposer 通过闭包持有 domainPromise
+// ---------------------------------------------------------------------------
+
+test('A02 T1: unmounting while the domain open is in flight still closes the handle exactly once', async () => {
+  const closes = []
+  let resolveOpen
+  const opened = new Promise((resolve) => { resolveOpen = resolve })
+  const ctx = new Context()
+  ctx.provide('systemPrompt', { tools: () => () => undefined, section: () => () => undefined })
+  ctx.provide('storageDomain', { open: () => opened })
+  await ctx.plugin(ToolRuntime)
+  await ctx.plugin(CommandRuntime)
+  const pluginFiber = await ctx.plugin(plugin, {})
+  // 卸载发生在 open 仍在飞行时（V1 形态下这里会抛 INACTIVE_EFFECT 并被空 catch 吞掉）。
+  await pluginFiber.dispose()
+  resolveOpen({
+    table: () => ({ get: async () => undefined, put: async () => {} }),
+    close: async () => { closes.push(1) },
+  })
+  await opened
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.equal(closes.length, 1, 'the handle opened during unmount must be closed exactly once')
+  await ctx.fiber.dispose()
+})
+
+test('A02 T1: a rejected domain open is reported, never left unhandled', async () => {
+  const unhandled = []
+  const onUnhandled = (reason) => { unhandled.push(reason) }
+  process.on('unhandledRejection', onUnhandled)
+  try {
+    const ctx = new Context()
+    ctx.provide('systemPrompt', { tools: () => () => undefined, section: () => () => undefined })
+    ctx.provide('storageDomain', { open: () => Promise.reject(new Error('backend down')) })
+    await ctx.plugin(ToolRuntime)
+    await ctx.plugin(CommandRuntime)
+    const pluginFiber = await ctx.plugin(plugin, {})
+    // 拒绝必须被显式处理（可见告警），而不是浮空 promise。
+    await new Promise((resolve) => setImmediate(resolve))
+    await pluginFiber.dispose()
+    await ctx.fiber.dispose()
+    await new Promise((resolve) => setImmediate(resolve))
+    assert.equal(unhandled.length, 0, 'the open rejection must be handled, not unhandled')
+  } finally {
+    process.off('unhandledRejection', onUnhandled)
+  }
+})
