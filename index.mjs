@@ -279,7 +279,7 @@ export function apply(ctx, config = {}) {
 
   const logger = ctx.logger(PLUGIN_NAME)
   const warn = (message) => logger.warn(message)
-  const eventGate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, probeIgnorableAppend())
+  const eventGate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, probeIgnorableAppend(), warn)
 
   // --- 恢复表：可选 storageDomain 的 'dsh_mask' 领域（异步打开，操作路径 await）。
   // storageDomain 缺失（bare profile 未组合存储栈）时降级为纯内存恢复表，
@@ -288,11 +288,20 @@ export function apply(ctx, config = {}) {
   /** @type {Promise<any>|null} 打开的领域（含 table/close），RestoreStore 按需消费。 */
   let domainPromise = null
   if (storageDomain !== undefined) {
-    domainPromise = storageDomain.open(dshMaskDomainSpec).then((domain) => {
-      ctx.effect(() => () => { void domain.close() }, `${PLUGIN_NAME}.domain.close`)
-      return domain
+    // V2 形态（A02 T1，与 dsh-score/src/index.ts 同构）：effect 先注册，disposer
+    // 通过闭包读取 domainPromise，因此卸载竞态（apply 期间卸载）不再把 close 挂在
+    // 一个 INACTIVE_EFFECT 的 ctx.effect 上——句柄要么被消费方持有、要么由本
+    // disposer 关闭，绝不泄漏，也不再有浮空 promise 被静默吞掉。
+    domainPromise = (async () => storageDomain.open(dshMaskDomainSpec))()
+    // 拒绝必须可见：打开失败在此响亮告警一次（绝不空 catch 吞掉）；消费方
+    // （RestoreStore）按操作继续走各自 onError 路径。
+    domainPromise.catch((error) => {
+      warn(`storage domain unavailable: ${messageOf(error)}`)
     })
-    domainPromise.catch(() => {}) // 消费方各自处理拒绝；此处仅避免未处理拒绝告警。
+    ctx.effect(() => () => {
+      // 打开失败时没有句柄可关，故这里只忽略「无句柄可关」这一种情况。
+      void domainPromise.then((domain) => domain.close()).catch(() => {})
+    }, `${PLUGIN_NAME}.domain.close`)
   } else if (resolved.persistRestoreTable) {
     warn('storageDomain not composed: the restore table is memory-only (lost on restart). Compose the storage stack (storage / storage-json / storage-domain) in the profile, or set persistRestoreTable: false.')
   }

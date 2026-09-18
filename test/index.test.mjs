@@ -2,6 +2,7 @@
 
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { KNOWN_SESSION_EVENT_TYPES } from '@deepseek-ai/dsh-session'
 import { apply, resolveConfig, Config } from '../index.mjs'
 import { makeEventGate, maybeAppendSessionEvent } from '../lib/gate.mjs'
 import { SESSION_EVENTS } from '../lib/constants.mjs'
@@ -64,6 +65,25 @@ test('event gate: known type appends, ignorable appends, unknown closes', () => 
   assert.deepEqual(ignorable('mask/applied'), { append: true, ignorable: true })
   const closed = makeEventGate(new Set(), false)
   assert.deepEqual(closed('mask/applied'), { append: false, ignorable: false })
+})
+
+test('event gate: a refusal is announced once per session and type, never silently dropped', () => {
+  const warnings = []
+  const gate = makeEventGate(new Set(), false, (message) => warnings.push(message))
+  assert.deepEqual(gate('mask/applied', 's1'), { append: false, ignorable: false })
+  assert.deepEqual(gate('mask/applied', 's1'), { append: false, ignorable: false })
+  assert.equal(warnings.length, 1, 'the same session+type warns exactly once')
+  assert.match(warnings[0], /mask\/applied/u)
+  gate('mask/applied', 's2')
+  assert.equal(warnings.length, 2, 'a second session reports its own first refusal')
+})
+
+test('vocabulary snapshot: the host set is the 0.1.6-alpha.2 58-entry list and holds no mask/* type', () => {
+  // 快照与宿主代际强绑定：红了 = 宿主词表变了，请重新快照本断言与 README 口径。
+  assert.equal(KNOWN_SESSION_EVENT_TYPES.size, 58)
+  assert.equal([...KNOWN_SESSION_EVENT_TYPES].filter((type) => type.startsWith('mask/')).length, 0)
+  const gate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, false)
+  assert.deepEqual(gate(SESSION_EVENTS.APPLIED, 's1'), { append: false, ignorable: false })
 })
 
 test('audit event payload carries counts only, never plaintext', () => {

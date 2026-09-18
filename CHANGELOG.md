@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.11] - 2026-09-18
+
+### Fixed
+
+- Close the storage domain through an effect registered before the open resolves. The previous shape registered the `close()` effect from inside the open's `then()`, so unmounting while the open was still in flight threw `INACTIVE_EFFECT` and the domain handle was never closed; that rejection was then swallowed by an empty `catch`. The effect is now registered first and reads the open promise from its closure, so the handle is closed exactly once even when the unmount wins the race, and a failed open is reported with a visible warning instead of a silent swallow. Covered by two lifecycle tests: unmount-during-open (close still called exactly once) and rejected open (no unhandled rejection).
+
+### Changed
+
+- The session-event gate now announces every refused audit append once per session and type. `mask/applied` is still not written on hosts that neither record the type nor stamp the `ignorable` envelope (sessions keep loading), but the refusal is no longer silent: the first refusal per session logs a visible warning naming the type and the documented limitation. No `session.append` behavior changed.
+
+### Added
+
+- `dsh.manifestVersion: 1` and the canonical three-clause `engines.dsh` range (honest manifest declaration; no runtime reader yet).
+
+### Docs
+
+- Re-anchor the five-language compatibility row to `dsh-v0.1.6-alpha.2` (adapted 2026-09-18) and state the audit-gate facts for that line: the host records 58 session event types, none of them `mask/*`, and `Session.append` still cannot stamp the `ignorable` envelope, so audit appends stay skipped while sessions keep loading.
+- Describe the two typecheck rulers in the development section: `typecheck` runs the alpha.2 development face and `typecheck:ci` runs the published-line face with cleared paths.
+
 ## [0.2.10] - 2026-09-12
 
 ### Fixed
