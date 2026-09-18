@@ -4,9 +4,11 @@ declare module '@deepseek-ai/dsh-session' {
   interface SessionEventMap {
     /**
      * 一次请求前脱敏的审计记录（log-only）：只记"替换了多少处 + 类型分布"，
-     * 绝不携带 PII 原文或占位符映射。注意：当前宿主构建（KNOWN_SESSION_EVENT_TYPES）
-     * 尚未收录 mask/*，运行时经自适应门跳过 append；宿主收录后自动开启
-     * （见 README「会话事件」）。
+     * 绝不携带 PII 原文或占位符映射。事实陈述：当前宿主代际
+     * （KNOWN_SESSION_EVENT_TYPES，0.1.6-alpha.2 的 58 项快照）未收录 mask/*，
+     * 且 append 无法盖章 ignorable 信封，因此运行时自适应门**不落盘**该事件、
+     * 并在每个会话首次拒绝时打一条可见告警（审计缺失是文档化限制，不是静默失败）。
+     * 宿主收录该类型后同一门自动开启落盘（见 README「会话事件」）。
      */
     'mask/applied': {
       sessionId: string

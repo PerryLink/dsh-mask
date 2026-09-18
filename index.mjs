@@ -279,7 +279,7 @@ export function apply(ctx, config = {}) {
 
   const logger = ctx.logger(PLUGIN_NAME)
   const warn = (message) => logger.warn(message)
-  const eventGate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, probeIgnorableAppend())
+  const eventGate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, probeIgnorableAppend(), warn)
 
   // --- 恢复表：可选 storageDomain 的 'dsh_mask' 领域（异步打开，操作路径 await）。
   // storageDomain 缺失（bare profile 未组合存储栈）时降级为纯内存恢复表，
