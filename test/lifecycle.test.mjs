@@ -138,6 +138,7 @@ test('disposing the contributing fiber removes /mask, mask_test and the pre-step
 
 test('A02 T1: unmounting while the domain open is in flight still closes the handle exactly once', async () => {
   const closes = []
+  /** @type {(value: any) => void} */
   let resolveOpen
   const opened = new Promise((resolve) => { resolveOpen = resolve })
   const ctx = new Context()
