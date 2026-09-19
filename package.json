@@ -117,7 +117,7 @@
     "typescript": "^5.9.0"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.check.json",
+    "typecheck": "node scripts/typecheck-checkout.mjs",
     "typecheck:ci": "tsc -p tsconfig.check.ci.json",
     "test": "node --test \"test/*.test.mjs\"",
     "coverage": "node --test --experimental-test-coverage \"test/*.test.mjs\"",
