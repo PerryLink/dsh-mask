@@ -15,12 +15,13 @@ lib/                  zero-DSH-dependency modules (see ARCHITECTURE.md module ma
 test/*.test.mjs       node --test (strip/sanitize/mask/store/index/manifest/
                       composition/lifecycle + helpers/mock-ctx.mjs)
 scripts/              mechanical gates: verify-self-contained.mjs, verify-artifacts.mjs,
-                      verify-readmes.mjs, changelog-section.mjs
+                      verify-readmes.mjs, changelog-section.mjs; typecheck-checkout.mjs
+                      (the checkout-face ruler's guard)
 cordis.patch.yml      bundle declaration (insert mask); every Config key documented inline
 pnpm-workspace.yaml   nearest-workspace root (isolates this repo from the surrounding
                       deepseek-harness workspace during development)
 package.json          npm metadata; files whitelist = published content
-tsconfig.check.json   tsc --checkJs typecheck gate against the published 0.1.5-rc.2 peers
+tsconfig.check.json   checkout-face typecheck gate: `paths` point at the deepseek-harness checkout types, run through scripts/typecheck-checkout.mjs (reports "unverifiable" + exit 0 when no checkout is present); typecheck:ci keeps measuring the published line
 .github/workflows/    CI (3 OS × 2 Node), monthly compat probe, v* npm release
 README.md             English primary (GitHub default page; source of truth)
 README-{zh,es,pt,hi}.md  translations, top switcher, updated in the same commit
@@ -48,7 +49,7 @@ upstream/             ❌ read-only reference clone (Pii-Stripper-Middleware);
 
 ```sh
 pnpm install                                        # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci         # tsc --checkJs (tsconfig.check.json)
+pnpm run typecheck && pnpm run typecheck:ci         # checkout face + published-line face
 pnpm test                                           # node --test
 pnpm run verify:self-contained                      # dependency specs resolve from the registry
 pnpm run verify:artifacts                           # shipped files present + index.mjs importable
@@ -56,7 +57,7 @@ pnpm run check:readmes                              # five-language README consi
 pnpm pack                                           # the published tarball
 ```
 
-`typecheck` resolves `@deepseek-ai/*` from this repo's own `node_modules` (the pinned `0.1.5-rc.2` peers installed by pnpm). The repo must be its own pnpm workspace (`pnpm-workspace.yaml`) so it never resolves into a surrounding `deepseek-harness` checkout's node_modules.
+The two type rulers measure two different universes. `typecheck` (tsconfig.check.json) resolves `@deepseek-ai/*` through explicit `paths` into the `deepseek-harness` checkout's built types, so it catches drift against the host source line; it is wrapped by `scripts/typecheck-checkout.mjs`, which prints `unverifiable` and exits 0 on a machine without that checkout (CI runners), so no workflow ever gets a permanently red step. `typecheck:ci` (tsconfig.check.ci.json, no `paths`) resolves `@deepseek-ai/*` from this repo's own `node_modules` (the pinned peers installed by pnpm) and is the published line. The repo must stay its own pnpm workspace (`pnpm-workspace.yaml`) so ambient resolution never walks into a surrounding `deepseek-harness` checkout's node_modules.
 
 ## Release
 

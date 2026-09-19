@@ -150,7 +150,7 @@ Example override in your profile patch:
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # two rulers: alpha.2 dev face + published-line face (paths cleared)
+pnpm run typecheck && pnpm run typecheck:ci        # two rulers: checkout face (guarded; unverifiable without the checkout) + published-line face
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # dependency specs resolve from the registry
 pnpm run verify:artifacts                          # shipped files present + index.mjs importable

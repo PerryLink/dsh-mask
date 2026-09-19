@@ -148,7 +148,7 @@ profile patch 覆盖示例：
 
 ```sh
 pnpm install                                       # node ^22.19 || >=24
-pnpm run typecheck && pnpm run typecheck:ci        # 两把尺子：alpha.2 开发面 + 已发布线（清 paths）
+pnpm run typecheck && pnpm run typecheck:ci        # 两把尺子：checkout 面（带守卫，无 checkout 时不可验证）+ 已发布线面
 pnpm test                                          # node --test
 pnpm run verify:self-contained                     # 依赖 spec 均来自 registry
 pnpm run verify:artifacts                          # 发布文件齐全 + index.mjs 可 import
