@@ -117,12 +117,13 @@
     "typescript": "^5.9.0"
   },
   "scripts": {
-    "typecheck": "node scripts/typecheck-checkout.mjs",
+    "typecheck": "tsc -p tsconfig.check.json",
     "typecheck:ci": "tsc -p tsconfig.check.ci.json",
     "test": "node --test \"test/*.test.mjs\"",
     "coverage": "node --test --experimental-test-coverage \"test/*.test.mjs\"",
     "lint": "oxlint",
     "verify:self-contained": "node scripts/verify-self-contained.mjs",
+    "check:lockfile": "node scripts/check-lockfile-drift.mjs",
     "verify:artifacts": "node scripts/verify-artifacts.mjs",
     "check:readmes": "node scripts/verify-readmes.mjs"
   },
