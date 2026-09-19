@@ -5,9 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.12] - 2026-09-19
 
 ### Changed
+
+- The release workflow now publishes through **npm trusted publishing** (OIDC) instead of the long-lived `NPM_TOKEN` secret: `setup-node` no longer sets `registry-url` (its empty `_authToken` line made the registry answer 404 on PUT), npm is upgraded to >= 11.5.1 before publishing, and the "NPM_TOKEN is not set -> skip" guard is gone so a missing publisher cannot turn a release into a silent no-op.
 
 - The two type rulers now measure two different universes: 	sconfig.check.json resolves `@deepseek-ai/*` through explicit paths into the deepseek-harness checkout's built types (guarded by `scripts/typecheck-checkout.mjs`, which reports `unverifiable` and exits 0 where no checkout exists), while `typecheck:ci` keeps measuring the published line from this repo's own `node_modules`. Before this, both configs resolved the same 
 ode_modules, so the second ruler was decorative.
