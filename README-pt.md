@@ -154,7 +154,7 @@ O benchmark de PII (P/R/F1 por tipo em 108 amostras sintéticas) está em [`benc
 
 ## PerryLink DSH Plugin Family
 
-Este projeto é um dos [40 plugins de DeepSeek Harness](https://github.com/PerryLink) mantidos por [PerryLink](https://github.com/PerryLink). Se este ajuda você, os outros provavelmente também:
+Este projeto é um dos [41 plugins de DeepSeek Harness](https://github.com/PerryLink) mantidos por [PerryLink](https://github.com/PerryLink). Se este ajuda você, os outros provavelmente também:
 
 | Plugin | One-liner |
 |---|---|
