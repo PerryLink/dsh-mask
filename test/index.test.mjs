@@ -78,9 +78,12 @@ test('event gate: a refusal is announced once per session and type, never silent
   assert.equal(warnings.length, 2, 'a second session reports its own first refusal')
 })
 
-test('vocabulary snapshot: the host set is the 0.1.6-alpha.2 58-entry list and holds no mask/* type', () => {
+test('vocabulary snapshot: the host set is the 0.1.7-alpha.2 59-entry list and holds no mask/* type', () => {
   // 快照与宿主代际强绑定：红了 = 宿主词表变了，请重新快照本断言与 README 口径。
-  assert.equal(KNOWN_SESSION_EVENT_TYPES.size, 58)
+  // 0.1.7-alpha.2 相对 0.1.6-alpha.2 只增一项 developer/message、无删除
+  // （宿主 packages/core/session/src/known-event-types.ts 的 tag diff 实测）。
+  assert.equal(KNOWN_SESSION_EVENT_TYPES.size, 59)
+  assert.ok(KNOWN_SESSION_EVENT_TYPES.has('developer/message'), 'the single 0.1.7-line addition stays in the host vocabulary')
   assert.equal([...KNOWN_SESSION_EVENT_TYPES].filter((type) => type.startsWith('mask/')).length, 0)
   const gate = makeEventGate(KNOWN_SESSION_EVENT_TYPES, false)
   assert.deepEqual(gate(SESSION_EVENTS.APPLIED, 's1'), { append: false, ignorable: false })
