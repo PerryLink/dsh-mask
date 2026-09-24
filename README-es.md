@@ -36,7 +36,7 @@ Este plugin forma parte de la [familia de plugins DSH](https://github.com/PerryL
 
 | Superficie | Estado |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.1.7-rc.1` (adaptado el 2026-09-18): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-18 contra el checkout master `dsh-v0.1.7-alpha.1` (cadena completa de puertas + smoke de instalación de perfil). |
+| Harness | DeepSeek Harness `dsh-v0.1.7-rc.2` (adaptado el 2026-09-18): el sobre de sesión conserva su campo ignorable solo para compatibilidad de lectura de logs almacenados - Session.append aún no puede estamparlo, por lo que el comportamiento de la puerta no cambia. Verificado el 2026-09-18 contra el checkout master `dsh-v0.1.7-alpha.1` (cadena completa de puertas + smoke de instalación de perfil). |
 | Node | `^22.19.0 \|\| >=24.0.0` |
 | Plataformas | Donde corra DSH (host puro, regex sin dependencias; sin mitad de navegador) |
 | Modelo | Modelos de texto totalmente soportados |
@@ -133,7 +133,7 @@ Todas las opciones son campos Schemastery `Config` (modificables desde cordis.ym
 - **Solo regex.** `person` y `address` requieren un reconocedor NER externo; fallan al cargar. Cubierto de serie: teléfono, correo, documento, tarjeta, clave e IP (opt-in).
 - **Patrones específicos de región.** Los detectores `phone` e `id-card` solo reconocen formatos de China continental: `phone` es `1[3-9]` seguido de nueve dígitos, e `id-card` es un documento de residente chino de 18 caracteres (17 dígitos más un dígito o `X`). Los teléfonos y documentos de otros países no se detectan. `email`, `ip` y `key` no dependen de la región; `bank-card` acepta cualquier secuencia de 16-19 dígitos con menor confianza.
 - **La restauración visual necesita una mitad de cliente.** Enmascarar es host-side; desenmascarar burbujas en la UI es una función de navegador que esta forma host puro no incluye. El host conserva la tabla y el seam `RestoreStore` exportado (sus métodos piden un id de sesión), así que una futura mitad de cliente debe consumirlos mediante un remoto del host, no directamente; hoy la superficie de desenmascarado es el comando `/mask restore <text>`, y la clave `maskClientEnabled` se declara y valida pero ningún código en ejecución la lee todavía.
-- **Eventos en `0.1.7-rc.1`.** El host registra 59 tipos de evento de sesión y ninguno es `mask/*`; su `Session.append` tampoco puede estampar el sobre `ignorable`, así que los appends de auditoría se omiten (las sesiones siguen cargando). La puerta no es silenciosa: la primera negativa de cada sesión registra un aviso visible con el tipo omitido y esta limitación documentada. El append se habilita automáticamente cuando un host registra el tipo o admite el sobre `ignorable`.
+- **Eventos en `0.1.7-rc.2`.** El host registra 59 tipos de evento de sesión y ninguno es `mask/*`; su `Session.append` tampoco puede estampar el sobre `ignorable`, así que los appends de auditoría se omiten (las sesiones siguen cargando). La puerta no es silenciosa: la primera negativa de cada sesión registra un aviso visible con el tipo omitido y esta limitación documentada. El append se habilita automáticamente cuando un host registra el tipo o admite el sobre `ignorable`.
 
 ## Development
 
