@@ -34,6 +34,20 @@
 Este plugin faz parte da [família de plugins DSH](https://github.com/PerryLink) (mais de 40, todos Apache-2.0). Se for útil, **deixe uma estrela**: não desbloqueia nada, mas ajuda a próxima pessoa a encontrá-lo.
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-mask?
+
+Middleware de mascaramento de PII para o DeepSeek Harness: anonimize dados pessoais antes que cheguem ao modelo e restaure-os na camada de exibição.
+
+Telefones, e-mails, documentos, cartões, chaves e mais viram marcadores no limite do modelo; o texto simples nunca entra no seu registro de sessão.
+
+![Demonstração de terminal do dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+
+## Comparison
+
+![Gráfico comparativo medido do dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
+
+108 synthetic samples (60 positive, 48 negative) · from benchmark/RESULTS.md
+
 ## Compatibility
 
 | Superfície | Estado |
@@ -62,7 +76,11 @@ mensagem do usuário ──agent/pre-step──▶ marcadores ──modelo──
 ## Quick start
 
 ```sh
-dsh plugin --profile web add "github:PerryLink/dsh-mask#main"
+dsh plugin --profile web add github:PerryLink/dsh-mask
+```
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-mask
 # ou via npm
 dsh plugin --profile web add dsh-mask
 dsh --profile web --dump-config | grep -A2 'id: mask'
@@ -83,7 +101,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 
 ## Install & uninstall
 
-- **Canal git**: `dsh plugin --profile web add "github:PerryLink/dsh-mask#main"` (equivale a `git+https://github.com/PerryLink/dsh-mask.git`). Sem etapa de build.
+- **Canal git**: `dsh plugin --profile web add github:PerryLink/dsh-mask` (equivale a `git+https://github.com/PerryLink/dsh-mask.git`). Sem etapa de build.
 - **Canal npm**: `dsh plugin --profile web add dsh-mask`.
 - **Canal tarball**: `pnpm pack` e depois `dsh plugin --profile web add ./dsh-mask-<version>.tgz`.
 - **Desinstalar**: `dsh plugin --profile web remove dsh-mask`.

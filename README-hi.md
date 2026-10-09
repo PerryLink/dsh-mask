@@ -34,6 +34,20 @@
 यह प्लगइन [DSH प्लगइन परिवार](https://github.com/PerryLink) का हिस्सा है (40+ प्लगइन, सभी Apache-2.0)। अगर यह उपयोगी लगे, तो **एक स्टार दें** — इससे कोई सुविधा अनलॉक नहीं होती, पर अगला व्यक्ति इसे खोज में आसानी से पा लेता है।
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-mask?
+
+DeepSeek Harness के लिए PII मास्किंग मिडलवेयर — मॉडल तक पहुँचने से पहले व्यक्तिगत डेटा को अनाम करें, डिस्प्ले लेयर पर उसे वापस लाएँ।
+
+फ़ोन, ईमेल, आईडी कार्ड, बैंक कार्ड, कुंजियाँ आदि मॉडल सीमा पर प्लेसहोल्डर बन जाते हैं; मूल पाठ आपके सत्र लॉग में कभी नहीं जाता।
+
+![dsh-mask का टर्मिनल डेमो: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+
+## Comparison
+
+![dsh-mask का मापा गया तुलना चार्ट](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
+
+108 synthetic samples (60 positive, 48 negative) · from benchmark/RESULTS.md
+
 ## Compatibility
 
 | सतह | स्थिति |
@@ -62,7 +76,11 @@
 ## Quick start
 
 ```sh
-dsh plugin --profile web add "github:PerryLink/dsh-mask#main"
+dsh plugin --profile web add github:PerryLink/dsh-mask
+```
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-mask
 # या npm से
 dsh plugin --profile web add dsh-mask
 dsh --profile web --dump-config | grep -A2 'id: mask'
@@ -83,7 +101,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 
 ## Install & uninstall
 
-- **git चैनल**: `dsh plugin --profile web add "github:PerryLink/dsh-mask#main"` (`git+https://github.com/PerryLink/dsh-mask.git` के बराबर)। कोई build चरण नहीं।
+- **git चैनल**: `dsh plugin --profile web add github:PerryLink/dsh-mask` (`git+https://github.com/PerryLink/dsh-mask.git` के बराबर)। कोई build चरण नहीं।
 - **npm चैनल**: `dsh plugin --profile web add dsh-mask`।
 - **tarball चैनल**: `pnpm pack` फिर `dsh plugin --profile web add ./dsh-mask-<version>.tgz`।
 - **अनइंस्टॉल**: `dsh plugin --profile web remove dsh-mask`।

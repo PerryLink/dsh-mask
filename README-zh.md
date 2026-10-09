@@ -34,6 +34,20 @@
 这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
 
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+## What is dsh-mask?
+
+面向 DeepSeek Harness 的 PII 脱敏中间件——在个人数据进入模型前匿名化，在展示层还原。
+
+电话、邮箱、身份证、银行卡、密钥等在模型边界变成占位符；原文绝不进入会话日志。
+
+![dsh-mask 终端演示：dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+
+## Comparison
+
+![dsh-mask 的实测对比柱状图](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
+
+108 synthetic samples (60 positive, 48 negative) · from benchmark/RESULTS.md
+
 ## Compatibility
 
 | 维度 | 状态 |
@@ -62,8 +76,12 @@
 ## Quick start
 
 ```sh
+dsh plugin --profile web add github:PerryLink/dsh-mask
+```
+
+```sh
 # 1. 把 bundle 安装进 profile
-dsh plugin --profile web add "github:PerryLink/dsh-mask#main"
+dsh plugin --profile web add github:PerryLink/dsh-mask
 
 # 或从 npm（发布版本）
 dsh plugin --profile web add dsh-mask
@@ -89,7 +107,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 
 ## Install & uninstall
 
-- **git 通道**（最新 `main`）：`dsh plugin --profile web add "github:PerryLink/dsh-mask#main"`（等价于从 `git+https://github.com/PerryLink/dsh-mask.git` 安装）。无构建步骤——`index.mjs` 与 `lib/` 即发布产物。
+- **git 通道**（最新 `main`）：`dsh plugin --profile web add github:PerryLink/dsh-mask`（等价于从 `git+https://github.com/PerryLink/dsh-mask.git` 安装）。无构建步骤——`index.mjs` 与 `lib/` 即发布产物。
 - **npm 通道**（发布版本）：`dsh plugin --profile web add dsh-mask`。
 - **tarball 通道**：在本仓库 `pnpm pack`，再 `dsh plugin --profile web add ./dsh-mask-<version>.tgz`。
 - **卸载**：`dsh plugin --profile web remove dsh-mask`（或从 profile patch 删掉该行）。

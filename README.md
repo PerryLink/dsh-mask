@@ -36,6 +36,20 @@
 *English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
 
 
+## What is dsh-mask?
+
+PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, keep it reversible host-side.
+
+Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.
+
+![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+
+## Comparison
+
+![Measured comparison chart for dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
+
+108 synthetic samples (60 positive, 48 negative) · from benchmark/RESULTS.md
+
 ## Compatibility
 
 | Surface | Status |
@@ -64,8 +78,12 @@ user message ──agent/pre-step──▶ placeholders ──model──▶ pla
 ## Quick start
 
 ```sh
+dsh plugin --profile web add github:PerryLink/dsh-mask
+```
+
+```sh
 # 1. install the bundle into your profile
-dsh plugin --profile web add "github:PerryLink/dsh-mask#main"
+dsh plugin --profile web add github:PerryLink/dsh-mask
 
 # or from npm (published releases)
 dsh plugin --profile web add dsh-mask
@@ -91,7 +109,7 @@ Then tailor the entity list in your profile patch:
 
 ## Install & uninstall
 
-- **git channel** (latest `main`): `dsh plugin --profile web add "github:PerryLink/dsh-mask#main"` (equivalent to installing from `git+https://github.com/PerryLink/dsh-mask.git`). No build step — `index.mjs` and `lib/` are the shipped artifacts.
+- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-mask` (equivalent to installing from `git+https://github.com/PerryLink/dsh-mask.git`). No build step — `index.mjs` and `lib/` are the shipped artifacts.
 - **npm channel** (published releases): `dsh plugin --profile web add dsh-mask`.
 - **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-mask-<version>.tgz`.
 - **uninstall**: `dsh plugin --profile web remove dsh-mask` (or remove the row from the profile patch).
