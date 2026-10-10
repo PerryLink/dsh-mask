@@ -43,6 +43,10 @@ Telefones, e-mails, documentos, cartões, chaves e mais viram marcadores no limi
 
 ![Demonstração de terminal do dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
 
+![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+
+*A mesma execução, animada.*
+
 ## Comparison
 
 ![Gráfico comparativo medido do dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)

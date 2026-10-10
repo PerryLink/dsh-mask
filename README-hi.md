@@ -43,6 +43,10 @@ DeepSeek Harness के लिए PII मास्किंग मिडलव�
 
 ![dsh-mask का टर्मिनल डेमो: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
 
+![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+
+*वही रन, एनिमेटेड।*
+
 ## Comparison
 
 ![dsh-mask का मापा गया तुलना चार्ट](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)

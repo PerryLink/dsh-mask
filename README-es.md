@@ -43,6 +43,10 @@ Teléfonos, correos, documentos, tarjetas, claves y más se convierten en marcad
 
 ![Demostración de terminal de dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
 
+![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+
+*La misma ejecución, animada.*
+
 ## Comparison
 
 ![Gráfico comparativo medido de dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)

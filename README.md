@@ -44,6 +44,10 @@ Phones, emails, ID cards, bank cards, keys, and more become placeholders at the 
 
 ![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
 
+![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+
+*The same run, animated.*
+
 ## Comparison
 
 ![Measured comparison chart for dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
