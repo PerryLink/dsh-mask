@@ -7,6 +7,9 @@
 //   日志重建（占位符形式），原文绝不进会话日志。
 // - 恢复表：占位符→原文映射只存内存 + 受控 storageDomain（dsh_mask/restore），
 //   绝不进会话日志明文；/mask restore 与恢复 seam 按需回载。
+// - 还原交付：宿主把命令结果（command/done.text）原样写进持久会话日志，且客户端
+//   用户可见输出就是从同一条事件渲染的（同源，无法分离）⇒ /mask restore 绝不把
+//   明文放进结果文本，而是写进受控文件（lib/deliver.mjs）并把路径回给用户。
 // - 审计：mask/applied 会话事件只记"替换了 N 处 + 类型分布"（log-only，自适应
 //   门），不记明文与映射。
 // - 表面：/mask 命令（status|on|off|restore|help）与 mask_test 工具（试跑一段
@@ -39,6 +42,8 @@ import { maskMessages, maskContentBlocks } from './lib/mask.mjs'
 import { makeEventGate, maybeAppendSessionEvent } from './lib/gate.mjs'
 import { RestoreStore } from './lib/store.mjs'
 import { dshMaskDomainSpec } from './lib/domain.mjs'
+import { deliverPlaintext, resolveRestoreDir } from './lib/deliver.mjs'
+import { redactText } from './lib/sanitize.mjs'
 
 export const name = PLUGIN_NAME
 
@@ -96,6 +101,7 @@ export const Config = Schema.object({
   maxRestoreEntriesPerSession: Schema.number().default(DEFAULTS.MAX_RESTORE_ENTRIES_PER_SESSION),
   maxSessions: Schema.number().default(DEFAULTS.MAX_SESSIONS),
   maskClientEnabled: Schema.boolean().default(DEFAULTS.MASK_CLIENT_ENABLED),
+  restoreDir: Schema.string().default(DEFAULTS.RESTORE_DIR),
 })
 
 /**
@@ -116,9 +122,13 @@ export function resolveConfig(config = {}) {
     maxRestoreEntriesPerSession: config.maxRestoreEntriesPerSession ?? DEFAULTS.MAX_RESTORE_ENTRIES_PER_SESSION,
     maxSessions: config.maxSessions ?? DEFAULTS.MAX_SESSIONS,
     maskClientEnabled: config.maskClientEnabled ?? DEFAULTS.MASK_CLIENT_ENABLED,
+    restoreDir: config.restoreDir ?? DEFAULTS.RESTORE_DIR,
   }
   if (resolved.enabled === false) return resolved
 
+  if (typeof resolved.restoreDir !== 'string') {
+    throw badConfig('restoreDir must be a string (empty = the OS temp directory)')
+  }
   if (resolved.mode === MODES.REGEX_NER) {
     throw nerModeUnsupported(resolved.mode)
   }
@@ -178,7 +188,37 @@ const HELP_TEXT = [
   '  status   show masking state: enabled, total replaced, type distribution (default)',
   '  on       enable masking at runtime (config.enabled is the persistent switch)',
   '  off      disable masking at runtime',
-  '  restore  unmap placeholders in <text> back to the values stored for this session',
+  '  restore  unmap placeholders in <text> back to the values stored for this session and',
+  '           deliver the plaintext as a file — never in this result text or the session log',
+].join('\n')
+
+/**
+ * restore 结果的安全文案（纯函数）：只含占位符与落点路径，绝不含还原出的明文。
+ * 路径由「配置目录 + 固定前缀 + 会话 id 的 sha256 前 16 位 + .txt」拼成，
+ * 不含会话 id、更不含原文，因此可以安全地进日志/转录（这也是它与明文的关键区别）。
+ * @param {{placeholders: string[], path: string}} delivery - 占位符与落点。
+ * @returns {string} 命令结果文本。
+ */
+export function renderRestore(delivery) {
+  return [
+    `mask: restored ${delivery.placeholders.length} placeholder(s): ${delivery.placeholders.join(', ')}`,
+    `  file: ${delivery.path}  (mode 0600, one file per session)`,
+    '  The plaintext is NOT in this text and NOT in the session log: the host records a',
+    '  command\'s result verbatim, so this command writes the restored text to the file above',
+    '  instead. Open it to read the plaintext; the next /mask restore overwrites it.',
+  ].join('\n')
+}
+
+/**
+ * restore 无参形态的说明（该形态未实现，见 README「Known limitations」）：
+ * 定位「最近一条助手消息」需要同步读会话事件史，而宿主已把
+ * `Session.snapshotEvents()/eventAt()/ownEvents()` 标为 @deprecated 并禁止新调用方。
+ */
+const RESTORE_NO_ARG_NOTE = [
+  '  (a no-argument form that would restore every placeholder of the last assistant message is',
+  '   not offered: the restore table is a flat per-session map with no per-message index, and',
+  '   locating that message needs a synchronous session-history read the host prohibits for new',
+  '   callers — see README Known limitations.)',
 ].join('\n')
 
 /**
@@ -383,6 +423,19 @@ export function apply(ctx, config = {}) {
       name: COMMAND_NAME,
       description: 'PII masking status and controls: status (replaced count + type distribution), on/off (runtime toggle), restore <text> (unmap placeholders to this session\'s values), help.',
       input: { hint: '[status | on | off | restore <text> | help]' },
+      // `recordInput: false` —— 输入侧的同类泄漏闸（2026-10-13，用户裁定）。
+      //
+      // 为什么必须关：宿主把 `parsed.rawInput`（逐字原文）写进 `command/run` 事件的 `args`
+      // 字段（dsh-commands `index.ts:376`），而该事件同样进持久会话转录。于是
+      // `/mask restore 13812345678`（用户直接粘贴明文）会把 PII 写进日志 —— 与
+      // 结果侧那条缺陷同一个洞，只是入口不同。关掉它后 `args` 字段整体缺席（宿主
+      // `index.ts:215` 只在显式设置时才带上该键）。
+      //
+      // 代价（如实记录，勿以为无损）：`recordInput` 是**命令级、无子命令粒度**
+      // （宿主 `types.ts:75`），所以 `status` / `on` / `off` 的 args 也一并退出转录。
+      // 这三条都是无参数或单关键词调用，信息量本来就为零；而恢复映射本身另有
+      // 交付文件与 `mask/applied` 审计事件承载，不依赖 args。因此这是净收益。
+      recordInput: false,
       async handler(invocation) {
         return handleMaskCommand(invocation)
       },
@@ -422,14 +475,33 @@ export function apply(ctx, config = {}) {
           return { kind: 'error', text: 'mask: restore requires an active session' }
         }
         if (snippet === '') {
-          return { kind: 'error', text: 'mask: restore needs text, e.g. /mask restore <PHONE_1>' }
+          return { kind: 'error', text: `mask: restore needs text, e.g. /mask restore <PHONE_1>\n${RESTORE_NO_ARG_NOTE}` }
         }
-        const restored = await store.restore(sessionId, snippet)
-        return { kind: 'success', text: `mask: restored\n${restored}` }
+        const { text: restored, placeholders } = await store.restoreDetailed(sessionId, snippet)
+        if (placeholders.length === 0) {
+          return {
+            kind: 'success',
+            text: [
+              'mask: restore found no placeholder this session knows — nothing was revealed or written.',
+              '  Pass a placeholder exactly as the model saw it, e.g. /mask restore <PHONE_1>',
+            ].join('\n'),
+          }
+        }
+        // 安全缺陷修复点：宿主把 result.text 原样写进持久会话日志（command/done），
+        // 客户端又从同一条事件渲染用户可见输出 ⇒ 结果文本既是转录也是日志。
+        // 因此明文绝不进结果文本，只进受控文件，结果里只回路径 + 占位符名。
+        const delivery = await deliverPlaintext({
+          dir: resolveRestoreDir(resolved.restoreDir),
+          sessionId,
+          text: restored,
+        })
+        return { kind: 'success', text: renderRestore({ placeholders, path: delivery.path }) }
       }
       return { kind: 'success', text: HELP_TEXT }
     } catch (error) {
-      const message = `mask: ${actionKey} failed: ${messageOf(error)}`
+      // 失败关闭：交付失败也绝不回退到「把明文放进结果文本」。错误消息同样过
+      // redactText（ARCHITECTURE「Sanitize before display/log」），因为它同样会进日志。
+      const message = redactText(`mask: ${actionKey} failed: ${messageOf(error)}`)
       logger.error(message)
       return { kind: 'error', text: message }
     }

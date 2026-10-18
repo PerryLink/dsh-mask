@@ -164,6 +164,25 @@ test('restore AI reply that keeps placeholders', () => {
   assert.ok(!restored.includes('<PHONE_1>'))
 })
 
+test('placeholdersIn lists only known placeholders, never plaintext', () => {
+  const s = stripper()
+  s.strip('联系 13812345678 / a@b.com')
+  const found = s.placeholdersIn('<PHONE_1> 和 <EMAIL_1> 和 <PHONE_9>')
+  // <PHONE_9> 本会话未知 ⇒ 不报告（也不会被 restore 命中）；
+  // 等长占位符保持映射插入顺序，与 restore() 的替换顺序一致。
+  assert.deepEqual(found, ['<PHONE_1>', '<EMAIL_1>'])
+  assert.equal(JSON.stringify(found).includes('13812345678'), false)
+})
+
+test('placeholdersIn is empty for clean text, empty text, and non-strings', () => {
+  const s = stripper()
+  s.strip('13812345678')
+  assert.deepEqual(s.placeholdersIn('no placeholders'), [])
+  assert.deepEqual(s.placeholdersIn(''), [])
+  assert.deepEqual(s.placeholdersIn(null), [])
+  assert.deepEqual(new Stripper({ patterns: [] }).placeholdersIn('<PHONE_1>'), [])
+})
+
 // ---------------------------------------------------------------------------
 // 累计模式（stripInto，会话内跨请求不重置）
 // ---------------------------------------------------------------------------

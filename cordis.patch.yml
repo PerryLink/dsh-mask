@@ -58,3 +58,10 @@
         # already backs it; the client slot ships separately and is off by
         # default until the live slot catalog verifies the target slot.
         maskClientEnabled: false
+        # Where /mask restore delivers the restored plaintext. The host writes a
+        # command's result (command/done.text) into the session log verbatim,
+        # and the client renders that same event, so the plaintext can never
+        # live in the result text: it goes to one controlled file per session
+        # (mode 0600, overwritten by the next restore) and the result carries
+        # the path plus the placeholder names only. Empty = os.tmpdir()/dsh-mask-restore.
+        restoreDir: ''

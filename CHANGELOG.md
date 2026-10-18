@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.22] - 2026-10-18
+
+### Changed
+
+- Add a 1280×720 hero and a 960×540, 4-second terminal GIF rendered from the test run; `screenshots.json` is an object array and `capture.json` records the command.
+
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
@@ -25,6 +31,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+## [0.2.21] - 2026-10-17
+
+### Fixed
+
+- **`/mask restore` wrote the restored plaintext into the persistent session log.** The
+  host logs a command's result verbatim (`command/done.text`, typed as verbatim in
+  `@deepseek-ai/dsh-commands`), and the client renders the user-visible command outcome
+  from that same event, so the two channels cannot be separated: the result text *is* the
+  log. Every `/mask restore <PLACEHOLDER>` therefore persisted the un-masked PII it had
+  just revealed, which is precisely what this plugin exists to prevent (the README and
+  `ARCHITECTURE.md` both promised the plaintext never reaches the log, and the restore
+  table stayed the only plaintext store). The reveal now goes to a controlled file —
+  one per session under `restoreDir` (default `os.tmpdir()/dsh-mask-restore`), directory
+  `0700`, file `0600`, symlink and ownership checked, overwritten by the next restore —
+  and the command result carries only that path and the placeholder names it restored.
+  Both are non-PII by construction, so the result stays safe to log and render. Delivery
+  failure fails closed: an error result is returned and the plaintext is never echoed as a
+  fallback. `/mask` error texts now also pass through `redactText`, since they are logged
+  too. `restoreDir` joins the config surface; the manifest declares `filesystem:write`.
+
+### Added
+
+- `lib/deliver.mjs` (the controlled restore-delivery channel), `Stripper.placeholdersIn`
+  and `RestoreStore.restoreDetailed` (report which placeholders a restore matched without
+  handling the plaintext twice), and 32 tests covering the delivery path, the fail-closed
+  cases, and the "no plaintext in the command result" contract.
+
+### Documentation
+
+- `README.md` (+ the four translations), `ARCHITECTURE.md` and `cordis.patch.yml` record
+  the delivery channel and its reason, and the Known limitations now state why a
+  no-argument `/mask restore` (restore every placeholder of the last assistant message) is
+  not offered: the restore table has no per-message index, and locating that message needs a
+  synchronous session-history read the host prohibits for new callers.
 
 ## [0.2.18] - 2026-10-05
 

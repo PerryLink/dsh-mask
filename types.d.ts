@@ -42,6 +42,13 @@ export interface Config {
   maxSessions?: number
   /** 浏览器半自动还原气泡开关（防御性 client slot；默认 false，未启用前对 UI 无副作用）。 */
   maskClientEnabled?: boolean
+  /**
+   * `/mask restore` 明文交付目录（默认空串 = `os.tmpdir()/dsh-mask-restore`）。
+   * 宿主把命令结果原样写进会话日志、客户端又从同一条事件渲染用户可见输出，
+   * `restore` 的明文因此绝不放进结果文本，只写进该目录下的受控文件
+   * （每会话一个，mode 0600，下次还原覆盖），结果文本只回路径与占位符名。
+   */
+  restoreDir?: string
 }
 
 /** mask_test 工具规范结果。 */

@@ -41,7 +41,7 @@ Middleware de mascaramento de PII para o DeepSeek Harness: anonimize dados pesso
 
 Telefones, e-mails, documentos, cartões, chaves e mais viram marcadores no limite do modelo; o texto simples nunca entra no seu registro de sessão.
 
-![Demonstração de terminal do dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+![Demonstração de terminal do dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
 
 ![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
 
@@ -69,13 +69,13 @@ O `dsh-mask` anonimiza dados pessoais **no limite do modelo** e mantém uma tabe
 - **Mascaramento antes da requisição** — reescreve mensagens de `agent/pre-step` para que telefones, e-mails, documentos, cartões, chaves e IPs (opt-in) virem marcadores como `<PHONE_1>`. O texto mascarado é o que é registrado e enviado ao modelo.
 - **Tabela de restauração** — o mapa `marcador → original` vive só em memória e num domínio de armazenamento controlado (`dsh_mask`); o texto simples nunca entra no registro de sessão.
 - **Auditoria sem texto simples** — o evento `mask/applied` registra apenas «N valores substituídos + distribuição por tipo».
-- **Comando `/mask`** — `status`, `on`/`off`, `restore <text>`, `help`.
+- **Comando `/mask`** — `status`, `on`/`off`, `restore <text>` (desmapeia marcadores e entrega o texto simples como arquivo, nunca como texto registrável), `help`.
 - **Ferramenta `mask_test`** — teste um trecho e veja o resultado com marcadores; nunca revela os originais.
 
 ```text
-mensagem do usuário ──agent/pre-step──▶ marcadores ──modelo──▶ marcadores ──restore──▶ tela
-                                          ▲                                            │
-                                          └──── tabela de restauração (memória + dsh_mask) ─┘
+mensagem do usuário ──agent/pre-step──▶ marcadores ──modelo──▶ marcadores ──restore──▶ arquivo controlado
+                                          ▲                                                 │
+                                          └──── tabela de restauração (memória + dsh_mask) ──┘
 ```
 
 ## Quick start
@@ -102,6 +102,8 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 ```
 > /mask status
 > /mask restore <PHONE_1>
+mask: restored 1 placeholder(s): <PHONE_1>
+  file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
 
 ## Install & uninstall
@@ -128,6 +130,7 @@ Todas as opções são campos Schemastery `Config` (alteráveis via cordis.yml).
 | `persistRestoreTable` | `true` | Persiste a tabela no domínio `dsh_mask` |
 | `maxRestoreEntriesPerSession` | `500` | Limite de entradas por sessão |
 | `maxSessions` | `1000` | Limite de sessões em memória |
+| `restoreDir` | `''` | Onde o `/mask restore` entrega o texto simples. Vazio = `os.tmpdir()/dsh-mask-restore`; um valor relativo é resolvido contra o cwd do processo host. O diretório é criado `0700` e o arquivo escrito `0600`, um por sessão |
 
 ## Tools & surfaces
 
@@ -136,20 +139,20 @@ Todas as opções são campos Schemastery `Config` (alteráveis via cordis.yml).
 | Mascaramento `agent/pre-step` | nunca | Reescreve mensagens para marcadores |
 | `/mask status` | nunca | Estado, total substituído, distribuição |
 | `/mask on` / `/mask off` | nunca | Alternância em tempo de execução |
-| `/mask restore <text>` | sim (explícito) | Desmapeia marcadores para os valores desta sessão |
+| `/mask restore <text>` | sim (explícito) | Desmapeia marcadores para os valores desta sessão e os escreve num arquivo controlado (um por sessão, modo `0600`); o texto do resultado e o registro de sessão levam apenas esse caminho e os nomes dos marcadores |
 | `mask_test` | nunca | Mascara um trecho e reporta o resultado |
 
 ## Permissions & data
 
-- **Permissões**: sem rede, sem credenciais (`network:none`, `credentials:none`).
-- **Dados**: a tabela `marcador → original` vive em memória e, com `persistRestoreTable: true`, no domínio `dsh_mask`; nunca no registro de sessão.
+- **Permissões**: sem rede, sem credenciais (`network:none`, `credentials:none`). O manifest declara `filesystem:write` por causa do arquivo de entrega do `/mask restore`.
+- **Dados**: a tabela `marcador → original` vive em memória e, com `persistRestoreTable: true`, no domínio `dsh_mask`; nunca no registro de sessão. A única outra cópia em texto simples é o arquivo de entrega que um `/mask restore` explícito escreve (`restoreDir`, modo `0600`, um por sessão, sobrescrito pela próxima restauração); nada escreve texto simples em disco de forma implícita.
 - **Registro de sessão**: `mask/applied` é declarado em `types.d.ts` e anexado só quando o host registra o tipo.
 
 ## Security boundaries
 
-- **Texto simples nunca entra no registro de sessão.** O registrado e enviado é a forma mascarada; os originais ficam na tabela.
-- **Sanitizar antes de exibir/registrar.** `lib/sanitize.mjs` redige PII, segredos e credenciais de URL.
-- **Restauração controlada.** `/mask restore` é a única superfície de revelação explícita.
+- **Texto simples nunca entra no registro de sessão.** O registrado e enviado é a forma mascarada; os originais ficam na tabela. A mesma regra vale para a revelação: o host registra o texto do resultado de um comando **literalmente** e o usa para renderizar a saída visível, então `/mask restore` escreve o texto simples num arquivo controlado e devolve apenas o caminho.
+- **Sanitizar antes de exibir/registrar.** `lib/sanitize.mjs` redige PII, segredos e credenciais de URL; `mask_test`, `/mask status` e todos os caminhos de erro do `/mask` nunca exibem originais.
+- **Restauração controlada.** `/mask restore` é a única superfície de revelação explícita. Se a entrega falhar, falha fechado: um erro, nunca um fallback que exiba o texto simples.
 - **Falha fechada.** `mode`/`scope`/entidades não implementados e números fora de faixa falham ao carregar.
 - **Registros como efeitos.** Listener, comando, ferramenta e fechamento de domínio são efeitos Cordis.
 
@@ -157,7 +160,8 @@ Todas as opções são campos Schemastery `Config` (alteráveis via cordis.yml).
 
 - **Somente regex.** `person` e `address` exigem um reconhecedor NER externo; falham ao carregar. Coberto de série: telefone, e-mail, documento, cartão, chave e IP (opt-in).
 - **Padrões específicos de região.** Os detectores `phone` e `id-card` reconhecem apenas formatos da China continental: `phone` é `1[3-9]` seguido de nove dígitos, e `id-card` é um documento de residente chinês de 18 caracteres (17 dígitos mais um dígito ou `X`). Telefones e documentos de outros países não são detectados. `email`, `ip` e `key` não dependem da região; `bank-card` aceita qualquer sequência de 16-19 dígitos com menor confiança.
-- **A restauração visual precisa de uma metade de cliente.** Mascarar é host-side; desmascarar bolhas na UI é uma função de navegador que esta forma host puro não inclui. O host mantém a tabela e o seam `RestoreStore` exportado (seus métodos pedem um id de sessão), então uma futura metade de cliente precisa consumi-los por um remoto do host, não diretamente; hoje a superfície de desmascaramento é o comando `/mask restore <text>`, e a chave `maskClientEnabled` é declarada e validada mas nenhum código em execução a lê ainda.
+- **A restauração visual precisa de uma metade de cliente.** Mascarar é host-side; desmascarar bolhas na UI é uma função de navegador que esta forma host puro não inclui. O host mantém a tabela e o seam `RestoreStore` exportado (seus métodos pedem um id de sessão), então uma futura metade de cliente precisa consumi-los por um remoto do host, não diretamente; hoje a superfície de desmascaramento é o comando `/mask restore <text>`, que entrega o texto simples como arquivo porque o resultado de um comando é registrado literalmente, e a chave `maskClientEnabled` é declarada e validada mas nenhum código em execução a lê ainda.
+- **Não há `/mask restore` sem argumentos.** Restaurar *todos* os marcadores da última mensagem do assistente não é oferecido, e o comando diz isso quando invocado sem texto. Dois fatos do host impedem: a tabela de restauração é um mapa plano `{marcador: original}` por sessão, **sem índice por mensagem**, então essa mensagem precisa ser localizada no registro de eventos da sessão; e o host marcou `Session.snapshotEvents()` / `eventAt()` / `ownEvents()` como obsoletos com um «proibido para novos chamadores», e a única alternativa sancionada (manter uma projeção incremental) não é confiável no corredor de hosts declarado (`>=0.1.2-rc.1`). Os marcadores continuam sendo restaurados um a um: `/mask restore <PHONE_1>`.
 - **Eventos em `0.1.7-rc.2`.** O host registra 59 tipos de evento de sessão e nenhum é `mask/*`; seu `Session.append` também não consegue estampar o envelope `ignorable`, então os appends de auditoria são omitidos (sessões continuam carregando). A porta não é silenciosa: a primeira recusa de cada sessão registra um aviso visível com o tipo omitido e esta limitação documentada. O append é habilitado automaticamente quando um host registra o tipo ou aceita o envelope `ignorable`.
 
 ## Development

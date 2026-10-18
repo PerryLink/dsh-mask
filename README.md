@@ -42,7 +42,7 @@ PII masking middleware for DeepSeek Harness — anonymize personal data before i
 
 Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.
 
-![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
 
 ![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
 
@@ -70,13 +70,13 @@ Phones, emails, ID cards, bank cards, keys, and more become placeholders at the 
 - **Request-time masking** — `agent/pre-step` messages are rewritten so phones, emails, ID cards, bank cards, and keys (on by default) and IPs (opt-in) become `<PHONE_1>`-style placeholders. The masked text is what gets logged and sent to the model.
 - **Restore table** — the `placeholder → original` map lives only in memory and a controlled storage domain (`dsh_mask`); the plaintext never enters the session log.
 - **Audit, not plaintext** — the `mask/applied` session event records only "replaced N values + type distribution", never the original text or the mapping.
-- **`/mask` command** — `status` (counts + distribution), `on`/`off` (runtime toggle), `restore <text>` (unmap placeholders), `help`.
+- **`/mask` command** — `status` (counts + distribution), `on`/`off` (runtime toggle), `restore <text>` (unmap placeholders and deliver the plaintext as a file, never as logged text), `help`.
 - **`mask_test` tool** — run a snippet through the detector and see the placeholder result; it never reveals the original values.
 
 ```text
-user message ──agent/pre-step──▶ placeholders ──model──▶ placeholders ──restore──▶ display
-                                   ▲                                                    │
-                                   └──────── restore table (memory + dsh_mask) ────────┘
+user message ──agent/pre-step──▶ placeholders ──model──▶ placeholders ──restore──▶ controlled file
+                                   ▲                                                      │
+                                   └──────── restore table (memory + dsh_mask) ───────────┘
 ```
 
 ## Quick start
@@ -109,6 +109,8 @@ Then tailor the entity list in your profile patch:
 ```
 > /mask status
 > /mask restore <PHONE_1>
+mask: restored 1 placeholder(s): <PHONE_1>
+  file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
 
 ## Install & uninstall
@@ -136,6 +138,7 @@ All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id
 | `maxRestoreEntriesPerSession` | `500` | Per-session restore entry cap (oldest evicted first) |
 | `maxSessions` | `1000` | In-memory session cap (least-recently-used evicted, mapping reloaded on demand) |
 | `maskClientEnabled` | `false` | Feature flag for the browser half "reveal" bubble (defensive; off by default until the live slot catalog verifies the target slot). The key is schema-declared and validated, but no runtime code reads it yet, so it changes nothing until the browser half ships |
+| `restoreDir` | `''` | Where `/mask restore` delivers the restored plaintext. Empty = `os.tmpdir()/dsh-mask-restore`; a relative value resolves against the host process working directory. The directory is created `0700` and the file written `0600`, one file per session |
 
 Example override in your profile patch:
 
@@ -157,20 +160,20 @@ Example override in your profile patch:
 | `tools/post-execute` masking | never | Rewrites tool-result text blocks to placeholders before they are logged or fed back to the model (scope: `tools`) |
 | `/mask status` | never | Enabled state, total replaced, type distribution |
 | `/mask on` / `/mask off` | never | Runtime toggle (resets to `config.enabled` on restart) |
-| `/mask restore <text>` | yes (explicit) | Unmaps placeholders back to the values stored for this session |
+| `/mask restore <text>` | yes (explicit) | Unmaps placeholders back to the values stored for this session and writes them to a controlled file (one per session, mode `0600`); the result text and the session log carry only that path and the placeholder names |
 | `mask_test` | never | Masks a snippet and reports the placeholder result + counts |
 
 ## Permissions & data
 
-- **Permissions**: `dsh-mask` performs no network requests and stores no credentials; it only reads the session at the `agent/pre-step` boundary and writes its own `dsh_mask` storage domain. The `dshWorkshop` manifest declares `network:none` and `credentials:none`.
-- **Data**: the `placeholder → original` restore table lives in memory and, when `persistRestoreTable: true`, in the controlled `dsh_mask` storage domain — this is the only place plaintext PII is stored, and it is never written to the session log.
+- **Permissions**: `dsh-mask` performs no network requests and stores no credentials; it reads the session at the `agent/pre-step` boundary, writes its own `dsh_mask` storage domain, and writes the `/mask restore` delivery file (the manifest declares `filesystem:write` for exactly that). The `dshWorkshop` manifest also declares `network:none` and `credentials:none`.
+- **Data**: the `placeholder → original` restore table lives in memory and, when `persistRestoreTable: true`, in the controlled `dsh_mask` storage domain — it is never written to the session log. The only other plaintext copy is the delivery file an explicit `/mask restore` writes under `restoreDir` (mode `0600`, one file per session, overwritten by the next restore); nothing writes plaintext to disk implicitly.
 - **Session log**: `mask/applied` is declared in `types.d.ts` and appended only when the host records the type (see Known limitations). Its payload is counts + type distribution only.
 
 ## Security boundaries
 
-- **Plaintext never enters the session log.** The masked (placeholder) form is what gets logged and sent to the model, so model-visible content is reconstructable from the log in placeholder form; the originals stay in the restore table.
-- **Sanitize before display/log.** `lib/sanitize.mjs` redacts PII, secrets, and URL credentials before any text reaches the model or the log; `mask_test` and `/mask status` never echo originals.
-- **Controlled restore.** `/mask restore` is the single explicit reveal surface, and it only reads the mapping for the active session.
+- **Plaintext never enters the session log.** The masked (placeholder) form is what gets logged and sent to the model, so model-visible content is reconstructable from the log in placeholder form; the originals stay in the restore table. The same rule governs the reveal direction: a command's result text is logged **verbatim** by the host and rendered from that same event, so `/mask restore` writes the plaintext to a controlled file and returns only its path.
+- **Sanitize before display/log.** `lib/sanitize.mjs` redacts PII, secrets, and URL credentials before any text reaches the model or the log; `mask_test`, `/mask status`, and every `/mask` error path never echo originals.
+- **Controlled restore.** `/mask restore` is the single explicit reveal surface, and it only reads the mapping for the active session. Failure fails closed: if the delivery file cannot be written, the command reports an error and never falls back to echoing the plaintext.
 - **Fail closed.** Unimplemented `mode` (`regex+ner`), unknown `scope` values, NER-only entities, and out-of-bounds numbers all fail loudly at load.
 - **Registrations are effects.** The listener, command, tool, and storage-domain close are all Cordis effects — stop/hot-reload removes them.
 
@@ -178,7 +181,8 @@ Example override in your profile patch:
 
 - **Regex only.** Name (`person`) and address (`address`) recognition needs an external NER recognizer, which the pure-host zero-dependency form does not bundle; `mode: regex+ner` and those entities fail loudly at load. The PII types covered out of the box are phone, email, ID card, bank card, key, and (opt-in) IP.
 - **Region-specific patterns.** The `phone` and `id-card` detectors match mainland-China formats only: `phone` is `1[3-9]` followed by nine digits, and `id-card` is an 18-character Chinese resident ID (17 digits plus a digit or `X`). Phone numbers and national identifiers from other countries are not detected. `email`, `ip`, and `key` are region-agnostic; `bank-card` accepts any 16-19 digit run at a lower confidence score.
-- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command, and the `maskClientEnabled` key is validated but read by no runtime code yet.
+- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command, which delivers the plaintext as a file because a command result is logged verbatim (see Security boundaries), and the `maskClientEnabled` key is validated but read by no runtime code yet.
+- **No no-argument `/mask restore`.** Restoring *every* placeholder of the most recent assistant message is not offered, and the command says so when invoked without text. Two host facts block it: the restore table is a flat per-session `{placeholder: original}` map with no per-message index, so that message has to be located in the session event log; and the host deprecated `Session.snapshotEvents()` / `eventAt()` / `ownEvents()` with an explicit "new calls are prohibited", leaving an incremental projection as the only sanctioned route — which this plugin's declared host corridor (`>=0.1.2-rc.1`) cannot rely on. Placeholders keep working one at a time instead: `/mask restore <PHONE_1>`.
 - **Session events on `0.1.7-rc.2`.** The harness records 59 session event types and none of them is `mask/*`; its `Session.append` also cannot stamp the `ignorable` envelope, so the session-log audit appends are skipped and sessions keep loading. The gate is not silent about it: the first refusal per session logs one visible warning naming the skipped type and this documented limitation. The plugin enables the append automatically once a host records the type or supports the `ignorable` envelope.
 
 ## Development

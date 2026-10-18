@@ -58,6 +58,38 @@ test('persist=false never touches the domain', async () => {
   assert.equal(data.restore.size, 0)
 })
 
+test('restoreDetailed reports the restored text plus the placeholders it used', async () => {
+  const store = new RestoreStore({ entities: ['phone', 'email'], maxEntries: 100, maxSessions: 10, persist: false })
+  store.mask('s1', '联系 13812345678 / a@b.com')
+  const detailed = await store.restoreDetailed('s1', 'a@b.com 是 <EMAIL_1>，手机 <PHONE_1>')
+  assert.equal(detailed.text, 'a@b.com 是 a@b.com，手机 13812345678')
+  // 报告顺序 == restore() 的替换顺序（长度降序，等长时保持映射插入顺序）。
+  assert.deepEqual(detailed.placeholders, ['<PHONE_1>', '<EMAIL_1>'])
+})
+
+test('restoreDetailed reports nothing for unknown placeholders or unknown sessions', async () => {
+  const store = new RestoreStore({ entities: ['phone'], maxEntries: 100, maxSessions: 10, persist: false })
+  store.mask('s1', '13812345678')
+  const miss = await store.restoreDetailed('s1', 'no placeholders here')
+  assert.equal(miss.text, 'no placeholders here')
+  assert.deepEqual(miss.placeholders, [])
+  const cold = await store.restoreDetailed('s-unknown', '<PHONE_1>')
+  assert.equal(cold.text, '<PHONE_1>')
+  assert.deepEqual(cold.placeholders, [])
+})
+
+test('restoreDetailed reuses the domain reload path of restore', async () => {
+  const { domain } = makeDomain()
+  const store = new RestoreStore({ entities: ['phone'], maxEntries: 100, maxSessions: 10, persist: true, domainPromise: Promise.resolve(domain) })
+  store.mask('s1', '13812345678')
+  await store.persist('s1')
+  // 模拟重启：全新 store 无内存映射，restoreDetailed 必须回载后才报告命中。
+  const store2 = new RestoreStore({ entities: ['phone'], maxEntries: 100, maxSessions: 10, persist: true, domainPromise: Promise.resolve(domain) })
+  const detailed = await store2.restoreDetailed('s1', '<PHONE_1>')
+  assert.equal(detailed.text, '13812345678')
+  assert.deepEqual(detailed.placeholders, ['<PHONE_1>'])
+})
+
 test('maxEntries evicts the oldest mapping entries', () => {
   const store = new RestoreStore({ entities: ['phone'], maxEntries: 1, maxSessions: 10, persist: false })
   store.mask('s1', '13812345678')

@@ -41,7 +41,7 @@
 
 电话、邮箱、身份证、银行卡、密钥等在模型边界变成占位符；原文绝不进入会话日志。
 
-![dsh-mask 终端演示：dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+![dsh-mask 终端演示：dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
 
 ![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
 
@@ -69,11 +69,11 @@
 - **请求前遮罩** —— 重写 `agent/pre-step` 消息，使电话、邮箱、身份证、银行卡、密钥（默认开启）与 IP（可选）变成 `<PHONE_1>` 之类的占位符。被遮罩的文本才是落盘并发送给模型的内容。
 - **恢复表** —— `占位符 → 原文` 映射只存内存与受控 storage domain（`dsh_mask`）；原文绝不进会话日志。
 - **审计不含明文** —— `mask/applied` 会话事件只记「替换了 N 处 + 类型分布」，不记原文与映射。
-- **`/mask` 命令** —— `status`（计数 + 分布）、`on`/`off`（运行时开关）、`restore <text>`（还原占位符）、`help`。
+- **`/mask` 命令** —— `status`（计数 + 分布）、`on`/`off`（运行时开关）、`restore <text>`（还原占位符，并把原文交付为文件而不是可落盘的文本）、`help`。
 - **`mask_test` 工具** —— 试跑一段文本看替换效果；绝不回显原文。
 
 ```text
-用户消息 ──agent/pre-step──▶ 占位符 ──模型──▶ 占位符 ──restore──▶ 展示
+用户消息 ──agent/pre-step──▶ 占位符 ──模型──▶ 占位符 ──restore──▶ 受控文件
                                ▲                                        │
                                └──── 恢复表（内存 + dsh_mask）──────────┘
 ```
@@ -108,6 +108,8 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 ```
 > /mask status
 > /mask restore <PHONE_1>
+mask: restored 1 placeholder(s): <PHONE_1>
+  file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
 
 ## Install & uninstall
@@ -134,6 +136,7 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 | `persistRestoreTable` | `true` | 把恢复表持久化到受控 `dsh_mask` 领域（`false` = 仅内存） |
 | `maxRestoreEntriesPerSession` | `500` | 每会话恢复条目上限（最旧先逐出） |
 | `maxSessions` | `1000` | 内存会话上限（LRU 逐出，映射按需回载） |
+| `restoreDir` | `''` | `/mask restore` 交付原文的位置。空 = `os.tmpdir()/dsh-mask-restore`；相对值相对宿主进程 cwd 解析。目录按 `0700` 创建、文件按 `0600` 写入，每会话一个文件 |
 
 profile patch 覆盖示例：
 
@@ -154,20 +157,20 @@ profile patch 覆盖示例：
 | `agent/pre-step` 遮罩 | 永不 | 把消息重写为占位符后再落盘/送模型 |
 | `/mask status` | 永不 | 启用状态、替换总数、类型分布 |
 | `/mask on` / `/mask off` | 永不 | 运行时开关（重启回到 `config.enabled`） |
-| `/mask restore <text>` | 是（显式） | 把占位符还原为本会话存储的值 |
+| `/mask restore <text>` | 是（显式） | 把占位符还原为本会话存储的值并写进受控文件（每会话一个，mode `0600`）；结果文本与会话日志只带该路径与占位符名 |
 | `mask_test` | 永不 | 遮罩一段文本并报告占位符结果 + 计数 |
 
 ## Permissions & data
 
-- **权限**：`dsh-mask` 不做网络请求、不存凭据；只在 `agent/pre-step` 边界读取会话，并写入自己的 `dsh_mask` 领域。`dshWorkshop` manifest 声明 `network:none` 与 `credentials:none`。
-- **数据**：`占位符 → 原文` 恢复表存内存；`persistRestoreTable: true` 时另存受控 `dsh_mask` 领域——这是 PII 原文唯一落点，绝不写会话日志。
+- **权限**：`dsh-mask` 不做网络请求、不存凭据；只在 `agent/pre-step` 边界读取会话，写入自己的 `dsh_mask` 领域，并写入 `/mask restore` 的交付文件（manifest 正是为此声明 `filesystem:write`）。`dshWorkshop` manifest 还声明 `network:none` 与 `credentials:none`。
+- **数据**：`占位符 → 原文` 恢复表存内存；`persistRestoreTable: true` 时另存受控 `dsh_mask` 领域——绝不写会话日志。唯一另一份原文副本是显式 `/mask restore` 写下的交付文件（`restoreDir`，mode `0600`，每会话一个，下次还原覆盖）；没有任何路径会隐式把原文写盘。
 - **会话日志**：`mask/applied` 在 `types.d.ts` 声明，仅在宿主收录该类型时 append（见 Known limitations）。载荷只有计数 + 类型分布。
 
 ## Security boundaries
 
-- **原文绝不进会话日志。** 落盘并送模型的是遮罩（占位符）形式，因此模型可见内容可自日志以占位符形式重建；原文留在恢复表。
-- **展示/日志前脱敏。** `lib/sanitize.mjs` 在文本进入模型或日志前打码 PII、密钥与 URL 凭据；`mask_test` 与 `/mask status` 永不回显原文。
-- **受控还原。** `/mask restore` 是唯一的显式还原面，且只读当前会话的映射。
+- **原文绝不进会话日志。** 落盘并送模型的是遮罩（占位符）形式，因此模型可见内容可自日志以占位符形式重建；原文留在恢复表。还原方向同理：宿主把命令结果文本**原样**写进日志、并从那一条事件渲染用户可见输出，所以 `/mask restore` 把原文写进受控文件，只回路径。
+- **展示/日志前脱敏。** `lib/sanitize.mjs` 在文本进入模型或日志前打码 PII、密钥与 URL 凭据；`mask_test`、`/mask status` 与所有 `/mask` 错误路径永不回显原文。
+- **受控还原。** `/mask restore` 是唯一的显式还原面，且只读当前会话的映射。失败关闭：交付文件写不出时命令报错，绝不回退成回显原文。
 - **失败关闭。** 未实现的 `mode`（`regex+ner`）、`scope`（`tools`）、NER 实体与越界数值均在加载期响亮失败。
 - **注册即 effect。** 监听器、命令、工具与领域关闭都是 Cordis effect——停止/热重载即可撤销。
 
@@ -175,7 +178,8 @@ profile patch 覆盖示例：
 
 - **仅正则。** 姓名（`person`）与地址（`address`）识别需要外部 NER 识别器，纯 host 零依赖形态未捆绑；`mode: regex+ner` 与这些实体在加载期响亮失败。开箱即用覆盖电话、邮箱、身份证、银行卡、密钥与（可选）IP。
 - **正则具地域局限。** `phone` 与 `id-card` 只匹配中国大陆格式：`phone` 为 `1[3-9]` 加九位数字，`id-card` 为 18 位中国居民身份证（17 位数字加一位数字或 `X`）。其他国家的电话号码与证件号码不会被检出。`email`、`ip`、`key` 与地域无关；`bank-card` 以较低置信度接受任意 16-19 位数字串。
-- **展示层还原需要浏览器半。** 遮罩完全在 host 侧，但客户端 UI 中透明还原助手气泡属于浏览器半功能，本纯 host 形态未交付。host 侧保留恢复表与已导出的 `RestoreStore` seam（其方法需要会话 id），因此未来的客户端半需经 host 远程面间接消费，而非直接使用；当前的反遮罩入口是 `/mask restore <text>` 命令；`maskClientEnabled` 键会被 schema 声明与校验，但尚无任何运行时代码读取它。
+- **展示层还原需要浏览器半。** 遮罩完全在 host 侧，但客户端 UI 中透明还原助手气泡属于浏览器半功能，本纯 host 形态未交付。host 侧保留恢复表与已导出的 `RestoreStore` seam（其方法需要会话 id），因此未来的客户端半需经 host 远程面间接消费，而非直接使用；当前的反遮罩入口是 `/mask restore <text>` 命令，它把原文交付为文件（因为命令结果会被原样记入日志，见「Security boundaries」）；`maskClientEnabled` 键会被 schema 声明与校验，但尚无任何运行时代码读取它。
+- **不提供无参 `/mask restore`。** 「还原最近一条助手消息里的全部占位符」这一形态未提供，且无参调用时命令会明确说明。两个宿主事实挡住了它：恢复表是每会话扁平的 `{占位符: 原文}` 映射、**没有按消息的索引**，因此必须去会话事件日志里定位那条消息；而宿主已把 `Session.snapshotEvents()` / `eventAt()` / `ownEvents()` 标为 deprecated 并明令**禁止新调用方**，其唯一被认可的替代（按投递事件增量维护投影）又超出本插件声明的宿主走廊（`>=0.1.2-rc.1`）所能依赖的范围。占位符仍可逐个还原：`/mask restore <PHONE_1>`。
 - **`0.1.7-rc.2` 会话事件。** 宿主收录 59 个会话事件类型，其中没有 `mask/*`；其 `Session.append` 也无法盖章 `ignorable` 信封，因此会话日志审计 append 被跳过（会话仍可加载）。门控不再静默：每个会话首次被拒时打一条可见告警，写明被跳过的事件类型与本限制。宿主收录该类型或支持 `ignorable` 信封后自动开启。
 
 ## Development

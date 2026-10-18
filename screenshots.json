@@ -1,6 +1,14 @@
-{
-  "screenshots": [
-    "docs/assets/dsh-mask-demo.png",
-    "docs/assets/dsh-mask-evidence.png"
-  ]
-}
+[
+  {
+    "path": "docs/assets/dsh-mask-hero.png",
+    "kind": "hero",
+    "alt": "dsh-mask terminal output",
+    "caption": "Real dsh-mask test run; test suite green."
+  },
+  {
+    "path": "docs/assets/dsh-mask-demo.gif",
+    "kind": "demo",
+    "alt": "Animated dsh-mask terminal session",
+    "caption": "The same run, assembled line by line."
+  }
+]
