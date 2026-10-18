@@ -341,7 +341,9 @@ PII 基准（108 个合成样本的逐类 P/R/F1）见 [`benchmark/RESULTS.md`](
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE)（Apache License 2.0）© 2026 dsh-mask contributors
 

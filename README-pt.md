@@ -323,7 +323,9 @@ Este projeto é um dos **87 plugins ativamente mantidos** do DeepSeek Harness da
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
 

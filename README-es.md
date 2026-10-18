@@ -323,7 +323,9 @@ Este proyecto es uno de los **87 plugins activamente mantenidos** de DeepSeek Ha
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
 

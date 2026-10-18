@@ -323,7 +323,9 @@ PII बेंचमार्क (108 सिंथेटिक नमूनों
 
 </details>
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
 
