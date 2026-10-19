@@ -133,7 +133,27 @@ mask: restored 1 placeholder(s): <PHONE_1>
 
 #### 详细示例
 
-- `/mask status`
+**命令**
+
+~~~sh
+mask_test
+~~~
+
+**输入**
+
+~~~json
+{"text":"电话 13812345678"}
+~~~
+
+**输出**
+
+~~~text
+mask_test: replaced 1 PII value(s) (PHONE=1)
+masked:
+电话 <PHONE_1>
+~~~
+
+*来源 `plugins/dsh-mask/index.mjs:243-250; test/index.test.mjs:306-315`*
 
 #### 简短示例
 

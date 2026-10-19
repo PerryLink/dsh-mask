@@ -127,7 +127,27 @@ mask: restored 1 placeholder(s): <PHONE_1>
 
 #### विस्तृत उदाहरण
 
-- `/mask status`
+**कमांड**
+
+~~~sh
+mask_test
+~~~
+
+**इनपुट**
+
+~~~json
+{"text":"电话 13812345678"}
+~~~
+
+**आउटपुट**
+
+~~~text
+mask_test: replaced 1 PII value(s) (PHONE=1)
+masked:
+电话 <PHONE_1>
+~~~
+
+*स्रोत `plugins/dsh-mask/index.mjs:243-250; test/index.test.mjs:306-315`*
 
 #### संक्षिप्त उदाहरण
 

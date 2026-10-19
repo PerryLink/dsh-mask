@@ -127,7 +127,27 @@ São os pontos de entrada reais; instale e chame um.
 
 #### Exemplo detalhado
 
-- `/mask status`
+**Comando**
+
+~~~sh
+mask_test
+~~~
+
+**Entrada**
+
+~~~json
+{"text":"电话 13812345678"}
+~~~
+
+**Saída**
+
+~~~text
+mask_test: replaced 1 PII value(s) (PHONE=1)
+masked:
+电话 <PHONE_1>
+~~~
+
+*Observado em `plugins/dsh-mask/index.mjs:243-250; test/index.test.mjs:306-315`*
 
 #### Exemplos breves
 
