@@ -319,7 +319,9 @@ PII बेंचमार्क (108 सिंथेटिक नमूनों
 | **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 सेवानिवृत्त — रिपॉज़िटरी README देखें |
 | **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 सेवानिवृत्त — रिपॉज़िटरी README देखें |
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
 

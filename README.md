@@ -340,6 +340,8 @@ This project is part of the DeepSeek Harness plugin family from [PerryLink](http
 | **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | 🚫 RETIRED — see the repo README |
 | **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | 🚫 RETIRED — see the repo README |
 
-</details>## License
+</details>
+
+## License
 
 [LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors
