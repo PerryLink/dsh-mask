@@ -155,6 +155,22 @@ masked:
 
 *来源 `plugins/dsh-mask/index.mjs:243-250; test/index.test.mjs:306-315`*
 
+#### 失败分支
+
+**输入**
+
+~~~text
+/mask restore <PHONE_1> with restoreDir=/tmp/dsh-mask-probe-not-a-dir (a regular file)
+~~~
+
+**输出**
+
+~~~text
+mask: restore failed: EEXIST: file already exists, mkdir '/tmp/dsh-mask-probe-not-a-dir'
+~~~
+
+*来源 `plugins/dsh-mask/index.mjs:501-506; plugins/dsh-mask/lib/deliver.mjs:89-97; plugins/dsh-mask/test/index.test.mjs:278-290`*
+
 #### 简短示例
 
 - `mask_test`
