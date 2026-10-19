@@ -232,7 +232,7 @@ PII 基准（108 个合成样本的逐类 P/R/F1）见 [`benchmark/RESULTS.md`](
 
 - [@PerryLink](https://github.com/PerryLink) —— 创建者与维护者：从 Pii-Stripper-Middleware 移植的正则 PII 检测器、`agent/pre-step` 遮罩 seam、恢复表、`/mask` 命令与 `mask_test` 工具、五语文档。
 
-## PerryLink DSH 插件家族
+## PerryLink DSH Plugin Family
 
 本项目是 [PerryLink](https://github.com/PerryLink) 维护的 DeepSeek Harness 插件家族成员。完整名单默认折叠，避免每个 README 的首屏被长表淹没；点击展开可查看每一行及其状态。
 
