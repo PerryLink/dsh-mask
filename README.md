@@ -56,11 +56,11 @@ PII masking middleware for DeepSeek Harness — anonymize personal data before i
 
 Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.
 
-![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
+![Workflow diagram for dsh-mask: call → plugin → result.](docs/assets/dsh-mask-flow.svg)
 
-![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+*Workflow overview: call → plugin → result. The examples below use the real command surface.*
 
-*The same run, animated.*
+
 
 ## Comparison
 
@@ -126,6 +126,19 @@ Then tailor the entity list in your profile patch:
 mask: restored 1 placeholder(s): <PHONE_1>
   file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
+
+### Examples
+
+These are the plugin's real entry points; install once, then call one.
+
+#### Detailed example
+
+- `/mask status`
+
+#### Brief examples
+
+- `mask_test`
+- `/mask restore <text>`
 
 ## Configuration
 

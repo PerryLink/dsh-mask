@@ -55,9 +55,10 @@ dsh plugin --profile <name> add dsh-mask
 
 电话、邮箱、身份证、银行卡、密钥等在模型边界变成占位符；原文绝不进入会话日志。
 
-![dsh-mask 终端演示：dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
+![dsh-mask 工作流图：调用 → 插件 → 结果。](docs/assets/dsh-mask-flow.svg)
 
-![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+*工作流概览：调用 → 插件 → 结果。下面的示例使用实际命令面。*
+
 
 *同一次运行，动图版。*
 
@@ -125,6 +126,19 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 mask: restored 1 placeholder(s): <PHONE_1>
   file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
+
+### 示例
+
+以下为插件真实入口；安装后调用一个即可。
+
+#### 详细示例
+
+- `/mask status`
+
+#### 简短示例
+
+- `mask_test`
+- `/mask restore <text>`
 
 ## Configuration
 

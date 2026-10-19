@@ -55,9 +55,10 @@ DeepSeek Harness के लिए PII मास्किंग मिडलव�
 
 फ़ोन, ईमेल, आईडी कार्ड, बैंक कार्ड, कुंजियाँ आदि मॉडल सीमा पर प्लेसहोल्डर बन जाते हैं; मूल पाठ आपके सत्र लॉग में कभी नहीं जाता।
 
-![dsh-mask का टर्मिनल डेमो: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
+![dsh-mask कार्यप्रवाह आरेख: कॉल → प्लगइन → परिणाम।](docs/assets/dsh-mask-flow.svg)
 
-![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+*कार्यप्रवाह: कॉल → प्लगइन → परिणाम। नीचे के उदाहरण वास्तविक कमांड सतह का उपयोग करते हैं।*
+
 
 *वही रन, एनिमेटेड।*
 
@@ -119,6 +120,19 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 mask: restored 1 placeholder(s): <PHONE_1>
   file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
+
+### उदाहरण
+
+ये वास्तविक प्रवेश बिंदु हैं; इंस्टॉल के बाद एक चलाएँ।
+
+#### विस्तृत उदाहरण
+
+- `/mask status`
+
+#### संक्षिप्त उदाहरण
+
+- `mask_test`
+- `/mask restore <text>`
 
 ## Configuration
 

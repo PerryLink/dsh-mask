@@ -55,9 +55,10 @@ Middleware de enmascaramiento de PII para DeepSeek Harness: anonimiza los datos 
 
 Teléfonos, correos, documentos, tarjetas, claves y más se convierten en marcadores de posición en el límite del modelo; el texto plano nunca entra en tu registro de sesión.
 
-![Demostración de terminal de dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-hero.png)
+![Diagrama de flujo de dsh-mask: llamada → plugin → resultado.](docs/assets/dsh-mask-flow.svg)
 
-![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+*Resumen del flujo: llamada → plugin → resultado. Los ejemplos siguientes usan la superficie de comandos real.*
+
 
 *La misma ejecución, animada.*
 
@@ -119,6 +120,19 @@ dsh --profile web --dump-config | grep -A2 'id: mask'
 mask: restored 1 placeholder(s): <PHONE_1>
   file: /tmp/dsh-mask-restore/restore-1f0c….txt  (mode 0600, one file per session)
 ```
+
+### Ejemplos
+
+Son los puntos de entrada reales; instala y llama a uno.
+
+#### Ejemplo detallado
+
+- `/mask status`
+
+#### Ejemplos breves
+
+- `mask_test`
+- `/mask restore <text>`
 
 ## Configuration
 
