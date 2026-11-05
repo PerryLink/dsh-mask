@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-label="dsh-mask data flow">
+<title>dsh-mask data flow</title>
+<rect width="1200" height="400" rx="18" fill="#0d1117"/>
+<text x="60" y="62" fill="#f0f6fc" font-family="ui-sans-serif,system-ui,sans-serif" font-size="30" font-weight="700">dsh-mask</text>
+<text x="60" y="94" fill="#8b949e" font-family="ui-monospace,monospace" font-size="16">agent/pre-step PII masking · restore table stays host-side</text>
+<line x1="60" y1="116" x2="1140" y2="116" stroke="#30363d"/>
+<rect x="60" y="150" width="180" height="96" rx="14" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+<text x="150" y="190" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">user message</text>
+<text x="150" y="218" fill="#8b949e" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">plaintext in</text>
+<path d="M246 198h33" stroke="#8b949e" stroke-width="3"/>
+<path d="M277 191l10 7-10 7" fill="none" stroke="#8b949e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="285" y="150" width="180" height="96" rx="14" fill="#161b22" stroke="#4B67B4" stroke-width="2"/>
+<text x="375" y="190" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">agent/pre-step</text>
+<text x="375" y="218" fill="#8b949e" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">→ <PHONE_1> <EMAIL_1></text>
+<path d="M471 198h33" stroke="#8b949e" stroke-width="3"/>
+<path d="M502 191l10 7-10 7" fill="none" stroke="#8b949e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="510" y="150" width="180" height="96" rx="14" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+<text x="600" y="190" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">model</text>
+<text x="600" y="218" fill="#8b949e" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">sees placeholders only</text>
+<path d="M696 198h33" stroke="#8b949e" stroke-width="3"/>
+<path d="M727 191l10 7-10 7" fill="none" stroke="#8b949e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="735" y="150" width="180" height="96" rx="14" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+<text x="825" y="190" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">/mask restore</text>
+<text x="825" y="218" fill="#8b949e" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">explicit reveal</text>
+<path d="M921 198h33" stroke="#8b949e" stroke-width="3"/>
+<path d="M952 191l10 7-10 7" fill="none" stroke="#8b949e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="960" y="150" width="180" height="96" rx="14" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+<text x="1050" y="190" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" font-weight="700">controlled file</text>
+<text x="1050" y="218" fill="#8b949e" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12">0600 · one per session</text>
+<path d="M375 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<path d="M825 246v39" stroke="#4B67B4" stroke-width="2" stroke-dasharray="5 5"/>
+<rect x="285" y="285" width="630" height="52" rx="12" fill="#161b22" stroke="#4B67B4" stroke-width="2"/>
+<text x="600" y="318" fill="#f0f6fc" text-anchor="middle" font-family="ui-monospace,monospace" font-size="14">restore table · memory + dsh_mask domain · never the session log</text>
+<text x="60" y="378" fill="#8b949e" font-family="ui-monospace,monospace" font-size="13">mask/applied audit event = counts + type distribution only · plaintext never enters the session log</text>
+</svg>
