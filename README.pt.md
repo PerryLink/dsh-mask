@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-en-dark.webp">
-  <img src="docs/assets/hero-en-light.webp" width="100%" alt="dsh-mask: anonimize os dados pessoais antes que cheguem ao modelo; o texto simples nunca entra no registro de sessão">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-en-dark-v3.webp">
+  <img src="docs/assets/hero-en-light-v3.webp" width="100%" alt="dsh-mask: anonimize os dados pessoais antes que cheguem ao modelo; o texto simples nunca entra no registro de sessão">
 </picture>
 
 # dsh-mask
@@ -39,8 +39,8 @@ dsh plugin --profile <name> add dsh-mask
 Antes que uma mensagem chegue ao modelo, o `dsh-mask` reescreve os telefones, e-mails, documentos de identidade, cartões bancários e chaves nela contidos em marcadores como `<PHONE_1>` — o que o modelo vê e o que o registro de sessão grava são apenas marcadores. Os originais vivem somente na tabela de restauração host-side (memória mais o domínio de armazenamento controlado `dsh_mask`), e uma chamada explícita de `/mask restore` os devolve como um arquivo com permissão `0600`, cujo caminho — nunca o texto simples — é o que fica registrado. Regex puro, zero dependências, sem requisições de rede.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v2-dark.svg">
-  <img src="docs/assets/dsh-mask-flow-v2-light.svg" width="100%" alt="Fluxo de dados do dsh-mask: mensagem do usuário → mascaramento em agent/pre-step → modelo → /mask restore → arquivo controlado">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v3-dark.svg">
+  <img src="docs/assets/dsh-mask-flow-v3-light.svg" width="100%" alt="Fluxo de dados do dsh-mask: mensagem do usuário → mascaramento em agent/pre-step → modelo → /mask restore → arquivo controlado">
 </picture>
 
 ## Instalação em três passos
@@ -158,8 +158,8 @@ mask: restore failed: EEXIST: file already exists, mkdir '/tmp/dsh-mask-probe-no
 ## Dados medidos
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-evidence-v2-en-dark.webp">
-  <img src="docs/assets/dsh-mask-evidence-v2-en-light.webp" width="100%" alt="Gráfico de barras de F1 por tipo do dsh-mask: phone, email, id-card, bank-card, key todos em 1.000; ip (opt-in) em 0.833">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-evidence-v3-en-dark.webp">
+  <img src="docs/assets/dsh-mask-evidence-v3-en-light.webp" width="100%" alt="Gráfico de barras de F1 por tipo do dsh-mask: phone, email, id-card, bank-card, key todos em 1.000; ip (opt-in) em 0.833">
 </picture>
 
 O benchmark de P/R/F1 por tipo sobre 108 amostras sintéticas (60 positivas, 48 negativas) está publicado em [`benchmark/RESULTS.md`](benchmark/RESULTS.md); regenere-o com `node benchmark/run.mjs` (sem etapa de build, zero dependências novas). O benchmark cobre apenas o caminho de regex: verificações de forma sem checksums, o regex de `ip` é permissivo quanto ao intervalo (daí seus falsos positivos), e `person`/`address` não são medidos.

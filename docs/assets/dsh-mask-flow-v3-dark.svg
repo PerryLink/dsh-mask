@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-mask data flow">
+<defs>
+  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#8496f5" stop-opacity=".15"/>
+    <stop offset=".5" stop-color="#8496f5" stop-opacity=".9"/>
+    <stop offset="1" stop-color="#8496f5" stop-opacity=".15"/>
+  </linearGradient>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="200%">
+    <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1b1735" flood-opacity="0.55"/>
+  </filter>
+  <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+    <circle cx="1.3" cy="1.3" r="1.3" fill="#182031"/>
+  </pattern>
+</defs>
+<rect width="1100" height="660" fill="#0d1117"/>
+<rect width="1100" height="660" fill="url(#dots)" opacity=".5"/>
+<text x="50" y="62" fill="#f0f3f9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-mask</text>
+<text x="50" y="90" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">data flow · masking at the model boundary · restore table stays host-side</text>
+<rect x="50" y="108" width="1000" height="1.6" rx="1" fill="#2a3142"/>
+<g filter="url(#soft)">
+  <rect x="50" y="190" width="176" height="118" rx="17" fill="#161b26" stroke="#2a3142" stroke-width="1.3"/>
+</g>
+<circle cx="74" cy="214" r="12" fill="#242d42"/>
+<text x="74" y="219" text-anchor="middle" fill="#8496f5" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">01</text>
+<text x="138.0" y="256" text-anchor="middle" fill="#f0f3f9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">user message</text>
+<text x="138.0" y="282" text-anchor="middle" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">plaintext enters</text>
+<path d="M231 249.0 C241.0 249.0, 241.0 249.0, 251 249.0" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
+<path d="M241 244.0 l8 5 -8 5" fill="none" stroke="#8496f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<g filter="url(#soft)">
+  <rect x="256" y="190" width="176" height="118" rx="17" fill="#161b26" stroke="#8496f5" stroke-width="2.6"/>
+</g>
+<circle cx="280" cy="214" r="12" fill="#242d42"/>
+<text x="280" y="219" text-anchor="middle" fill="#8496f5" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">02</text>
+<text x="344.0" y="256" text-anchor="middle" fill="#f0f3f9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">agent/pre-step</text>
+<text x="344.0" y="282" text-anchor="middle" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">-&gt; &lt;PHONE_1&gt;</text>
+<path d="M437 249.0 C447.0 249.0, 447.0 249.0, 457 249.0" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
+<path d="M447 244.0 l8 5 -8 5" fill="none" stroke="#8496f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<g filter="url(#soft)">
+  <rect x="462" y="190" width="176" height="118" rx="17" fill="#161b26" stroke="#2a3142" stroke-width="1.3"/>
+</g>
+<circle cx="486" cy="214" r="12" fill="#242d42"/>
+<text x="486" y="219" text-anchor="middle" fill="#8496f5" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">03</text>
+<text x="550.0" y="256" text-anchor="middle" fill="#f0f3f9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">model</text>
+<text x="550.0" y="282" text-anchor="middle" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">placeholder-only</text>
+<path d="M643 249.0 C653.0 249.0, 653.0 249.0, 663 249.0" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
+<path d="M653 244.0 l8 5 -8 5" fill="none" stroke="#8496f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<g filter="url(#soft)">
+  <rect x="668" y="190" width="176" height="118" rx="17" fill="#161b26" stroke="#2a3142" stroke-width="1.3"/>
+</g>
+<circle cx="692" cy="214" r="12" fill="#242d42"/>
+<text x="692" y="219" text-anchor="middle" fill="#8496f5" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">04</text>
+<text x="756.0" y="256" text-anchor="middle" fill="#f0f3f9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">/mask restore</text>
+<text x="756.0" y="282" text-anchor="middle" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">explicit reveal</text>
+<path d="M849 249.0 C871.0 249.0, 871.0 249.0, 893 249.0" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
+<path d="M883 244.0 l8 5 -8 5" fill="none" stroke="#8496f5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<g filter="url(#soft)">
+  <rect x="898" y="190" width="176" height="118" rx="17" fill="#161b26" stroke="#3fb950" stroke-width="2.6"/>
+</g>
+<circle cx="922" cy="214" r="12" fill="#242d42"/>
+<text x="922" y="219" text-anchor="middle" fill="#8496f5" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">05</text>
+<text x="986.0" y="256" text-anchor="middle" fill="#f0f3f9" font-family="ui-monospace, monospace" font-size="16" font-weight="700">controlled file</text>
+<text x="986.0" y="282" text-anchor="middle" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">0600 per session</text>
+<path d="M344 308 V378" stroke="#8496f5" stroke-width="1.7" stroke-dasharray="5 6" opacity=".75"/>
+<path d="M756 308 V378" stroke="#8496f5" stroke-width="1.7" stroke-dasharray="5 6" opacity=".75"/>
+<g filter="url(#soft)">
+  <rect x="256" y="378" width="588" height="58" rx="15" fill="#242d42" stroke="#8496f5" stroke-width="1.3"/>
+</g>
+<text x="280" y="403" fill="#8496f5" font-family="ui-monospace, monospace" font-size="13" font-weight="700">restore table</text>
+<text x="280" y="422" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">memory + dsh_mask storage domain · never the session log</text>
+<rect x="50" y="476" width="1000" height="58" rx="15" fill="#161b26" stroke="#2a3142"/>
+<text x="74" y="502" fill="#8496f5" font-family="ui-monospace, monospace" font-size="13" font-weight="700">mask/applied</text>
+<text x="74" y="522" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">session event = counts + type distribution only · the plaintext never enters the log</text>
+<circle cx="994" cy="506" r="4.5" fill="#3fb950"/>
+<text x="1006" y="511" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">audit</text>
+<text x="50" y="596" fill="#a8b1c4" font-family="ui-monospace, monospace" font-size="13">Apache-2.0 · PerryLink DSH plugin family</text>
+</svg>

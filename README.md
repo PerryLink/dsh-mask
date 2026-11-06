@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-zh-dark.webp">
-  <img src="docs/assets/hero-zh-light.webp" width="100%" alt="dsh-mask：在个人数据抵达模型之前完成脱敏，原文永不进入会话日志">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-zh-dark-v3.webp">
+  <img src="docs/assets/hero-zh-light-v3.webp" width="100%" alt="dsh-mask：在个人数据抵达模型之前完成脱敏，原文永不进入会话日志">
 </picture>
 
 # dsh-mask
@@ -39,8 +39,8 @@ dsh plugin --profile <name> add dsh-mask
 发消息给模型之前，`dsh-mask` 先把里面的电话、邮箱、身份证、银行卡、密钥换成 `<PHONE_1>` 这样的占位符——模型看到的、会话日志记下的，都只有占位符。真正的原文只存在主机侧的恢复表里（内存 + 受控的 `dsh_mask` 存储域），随时可以调用 `/mask restore` 显式取回：原文以 `0600` 权限的文件交付，路径才进日志。纯正则、零依赖、无网络请求。
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v2-dark.svg">
-  <img src="docs/assets/dsh-mask-flow-v2-light.svg" width="100%" alt="dsh-mask 数据流：用户消息 → agent/pre-step 打码 → 模型 → /mask restore → 受控文件">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v3-dark.svg">
+  <img src="docs/assets/dsh-mask-flow-v3-light.svg" width="100%" alt="dsh-mask 数据流：用户消息 → agent/pre-step 打码 → 模型 → /mask restore → 受控文件">
 </picture>
 
 ## 三步上手
@@ -158,8 +158,8 @@ mask: restore failed: EEXIST: file already exists, mkdir '/tmp/dsh-mask-probe-no
 ## 实测数据
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-evidence-v2-zh-dark.webp">
-  <img src="docs/assets/dsh-mask-evidence-v2-zh-light.webp" width="100%" alt="dsh-mask 分类型 F1 条形图：phone、email、id-card、bank-card、key 均为 1.000，ip（可选）为 0.833">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-evidence-v3-zh-dark.webp">
+  <img src="docs/assets/dsh-mask-evidence-v3-zh-light.webp" width="100%" alt="dsh-mask 分类型 F1 条形图：phone、email、id-card、bank-card、key 均为 1.000，ip（可选）为 0.833">
 </picture>
 
 108 个合成样本（60 正 / 48 负）的逐类 P/R/F1 基准见 [`benchmark/RESULTS.md`](benchmark/RESULTS.md)，可用 `node benchmark/run.mjs` 复现（无需构建、零新依赖）。该基准只覆盖正则路径：仅形状校验、不验校验位，`ip` 正则按范围宽松匹配（因此有误报），`person`/`address` 不在测量范围。
