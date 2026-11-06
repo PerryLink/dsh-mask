@@ -39,8 +39,8 @@ dsh plugin --profile <name> add dsh-mask
 Antes que uma mensagem chegue ao modelo, o `dsh-mask` reescreve os telefones, e-mails, documentos de identidade, cartões bancários e chaves nela contidos em marcadores como `<PHONE_1>` — o que o modelo vê e o que o registro de sessão grava são apenas marcadores. Os originais vivem somente na tabela de restauração host-side (memória mais o domínio de armazenamento controlado `dsh_mask`), e uma chamada explícita de `/mask restore` os devolve como um arquivo com permissão `0600`, cujo caminho — nunca o texto simples — é o que fica registrado. Regex puro, zero dependências, sem requisições de rede.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v3-dark.svg">
-  <img src="docs/assets/dsh-mask-flow-v3-light.svg" width="100%" alt="Fluxo de dados do dsh-mask: mensagem do usuário → mascaramento em agent/pre-step → modelo → /mask restore → arquivo controlado">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v4-dark.svg">
+  <img src="docs/assets/dsh-mask-flow-v4-light.svg" width="100%" alt="Fluxo de dados do dsh-mask: mensagem do usuário → mascaramento em agent/pre-step → modelo → /mask restore → arquivo controlado">
 </picture>
 
 ## Instalação em três passos

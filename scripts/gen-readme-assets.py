@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""README visuals for dsh-mask — v3.
+"""README visuals for dsh-mask — v4.
 
-Lessons applied (measured, not guessed):
-  * GitHub renders README images at ~880px wide. At 1440px canvas that is
-    scale 0.61; every on-canvas size is chosen so the on-screen size stays
-    readable: title >= 45px, secondary >= 15px, meta/notes >= 12px.
-  * Type scale follows the inspected samples (media-desk / dsh-Go):
-    display : value : secondary : meta  ~=  3.2 : 1.5 : 1 : 0.75.
-  * Right-side visual takes ~50% of the hero width (the samples use 55%).
-  * Spacing on a 4px grid; group gaps stay >= 1.2x the local line height.
+The second figure is not a generic left-to-right pipeline: the plugin's whole
+point is what happens on each SIDE of the model boundary, plus the restore loop.
+So the diagram is a two-zone layout split by a dashed boundary, with the restore
+path drawn back from the host side.
 """
 import os
 from html import escape
@@ -16,7 +12,6 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'docs', 'assets')
-
 FONT_CJK = r'C:\Windows\Fonts\msyh.ttc'
 FONT_CJK_BOLD = r'C:\Windows\Fonts\msyhbd.ttc'
 FONT_MONO = r'C:\Windows\Fonts\consola.ttf'
@@ -27,16 +22,16 @@ for _p in (FONT_CJK, FONT_CJK_BOLD, FONT_MONO):
         raise SystemExit(f'FATAL: font missing: {_p}')
 
 SKIN = {
-    'light': dict(bg_from='#f9f6fd', bg_to='#e4eaf8',
-                  card='#ffffff', card_edge='#e4e1ee',
-                  text='#141419', sub='#4d5261', faint='#8f94a4',
-                  accent='#4B67B4', accent2='#16a34a', warn='#bc4c00',
-                  pill='#ece7f9', grid='#e7e4f0', shadow=(32, 26, 64)),
-    'dark': dict(bg_from='#131a2a', bg_to='#0c1016',
-                 card='#1b2231', card_edge='#2e374b',
-                 text='#f0f3f9', sub='#a8b1c4', faint='#737b8d',
-                 accent='#8496f5', accent2='#3fb950', warn='#d29922',
-                 pill='#242d42', grid='#1e2636', shadow=(0, 0, 0)),
+    'light': dict(bg_from='#f9f6fd', bg_to='#e4eaf8', card='#ffffff',
+                  card_edge='#e4e1ee', text='#141419', sub='#4d5261',
+                  faint='#8f94a4', accent='#4B67B4', accent2='#16a34a',
+                  warn='#bc4c00', pill='#ece7f9', grid='#e7e4f0',
+                  shadow=(32, 26, 64)),
+    'dark': dict(bg_from='#131a2a', bg_to='#0c1016', card='#1b2231',
+                 card_edge='#2e374b', text='#f0f3f9', sub='#a8b1c4',
+                 faint='#737b8d', accent='#8496f5', accent2='#3fb950',
+                 warn='#d29922', pill='#242d42', grid='#1e2636',
+                 shadow=(0, 0, 0)),
 }
 
 
@@ -87,16 +82,15 @@ def card(img, box, skin, radius=20, shadow=22):
     return base.convert('RGB')
 
 
-def pill(img, xy, text, skin, size=18, fg=None, bg=None, kind='cjk_bold'):
+def pill(img, xy, text, skin, size=16, fg=None, bg=None, kind='cjk_bold'):
     d = ImageDraw.Draw(img)
     f = font(size, kind)
     tw = d.textlength(text, font=f)
     x, y = xy
-    h = size + 20
-    d.rounded_rectangle([x, y, x + tw + 36, y + h], radius=h // 2,
+    h = size + 18
+    d.rounded_rectangle([x, y, x + tw + 32, y + h], radius=h // 2,
                         fill=hx(bg or skin['pill']))
-    d.text((x + 18, y + 8), text, font=f, fill=hx(fg or skin['accent']))
-    return h
+    d.text((x + 16, y + 7), text, font=f, fill=hx(fg or skin['accent']))
 
 
 def wrap(d, text, f, maxw):
@@ -141,7 +135,7 @@ HERO = {
                meta='PII masking  ·  reversible  ·  zero network',
                in_label='User message', out_label='What the model sees',
                in_text=['Check this: phone 13812345678,', 'email zhang@example.com'],
-               out_text=['Check this: phone <PHONE_1>,', 'email <EMAIL_1>'],
+               out_text=['Check this: phone <PHONE_1>，', 'email <EMAIL_1>'],
                tag_in='plaintext stays here', tag_out='placeholders only',
                restore=['restore table', 'memory + dsh_mask', 'never the log'],
                foot='Apache-2.0  ·  PerryLink DSH plugin family'),
@@ -152,75 +146,66 @@ def hero(lang, skin):
     s = SKIN[skin]
     w, h = 1440, 576
     img = gradient(w, h, s['bg_from'], s['bg_to'])
-    img = glow(img, 1160, 90, 380, hx(s['accent']),
-               30 if skin == 'light' else 44)
-    img = glow(img, 200, 540, 280, hx(s['accent2']),
-               12 if skin == 'light' else 18)
+    img = glow(img, 1160, 90, 380, hx(s['accent']), 30 if skin == 'light' else 44)
+    img = glow(img, 200, 540, 280, hx(s['accent2']), 12 if skin == 'light' else 18)
     H = HERO[lang]
     d = ImageDraw.Draw(img)
     m = 60
-
-    # ---- left column ----
-    pill(img, (m, m), H['kicker'], s)
+    pill(img, (m, m), H['kicker'], s, size=17)
     d = ImageDraw.Draw(img)
-    d.text((m, 112), H['title'], font=font(84, 'mono'), fill=hx(s['text']))
-    y = 232
+    tsize = 84
+    while tsize > 44:
+        tf = font(tsize, 'mono')
+        if d.textlength(H['title'], font=tf) <= 540:
+            break
+        tsize -= 4
+    d.text((m, 112 + (84 - tsize) // 2), H['title'], font=font(tsize, 'mono'),
+           fill=hx(s['text']))
+    y = 228
     for line in H['value']:
         d.text((m, y), line, font=font(40, 'cjk_bold'), fill=hx(s['text']))
         y += 54
     fsub = font(26, 'cjk')
-    sub_lines = []
+    lines = []
     for para in H['sub'].split('\n'):
-        sub_lines += wrap(d, para, fsub, 520)
-    for i, ln in enumerate(sub_lines):
-        d.text((m + 2, 352 + i * 37), ln, font=fsub, fill=hx(s['sub']))
-    meta_y = 352 + len(sub_lines) * 37 + 20
-    d.text((m + 2, meta_y), H['meta'], font=font(20, 'cjk'),
-           fill=hx(s['faint']))
-    d.line([m + 2, meta_y + 46, m + 540, meta_y + 46],
-           fill=hx(s['grid']), width=2)
-    d.text((m + 2, meta_y + 62), H['foot'], font=font(17, 'en'),
+        lines += wrap(d, para, fsub, 520)
+    for i, ln in enumerate(lines):
+        d.text((m + 2, 348 + i * 36), ln, font=fsub, fill=hx(s['sub']))
+    meta_y = 348 + len(lines) * 36 + 18
+    d.text((m + 2, meta_y), H['meta'], font=font(20, 'cjk'), fill=hx(s['faint']))
+    d.line([m + 2, meta_y + 44, m + 540, meta_y + 44], fill=hx(s['grid']), width=2)
+    d.text((m + 2, meta_y + 60), H['foot'], font=font(17, 'en'),
            fill=hx(s['faint']))
 
-    # ---- right column: message -> masked -> restore (50% width) ----
+    # right: message -> masked, restore card
     img = card(img, (660, 56, 1380, 272), s)
     img = card(img, (660, 322, 1044, 516), s)
     img = card(img, (1080, 322, 1380, 516), s)
     d = ImageDraw.Draw(img)
-    d.text((692, 82), H['in_label'], font=font(20, 'cjk_bold'),
-           fill=hx(s['accent']))
+    d.text((692, 82), H['in_label'], font=font(20, 'cjk_bold'), fill=hx(s['accent']))
     pill(img, (1216, 74), H['tag_in'], s, size=15, kind='cjk')
     d = ImageDraw.Draw(img)
     for i, ln in enumerate(H['in_text']):
-        d.text((692, 128 + i * 34), ln, font=font(22, 'cjk'),
-               fill=hx(s['text']))
+        d.text((692, 128 + i * 34), ln, font=font(22, 'cjk'), fill=hx(s['text']))
     d.text((692, 208), '<PHONE_1>   <EMAIL_1>', font=font(20, 'mono'),
            fill=hx(s['accent']))
     d.text((692, 238), 'masked at agent/pre-step', font=font(16, 'mono'),
            fill=hx(s['faint']))
-    # arrow
     ax = 852
     d.line([ax, 280, ax, 306], fill=hx(s['accent']), width=5)
-    d.polygon([(ax - 10, 304), (ax + 10, 304), (ax, 320)],
-              fill=hx(s['accent']))
-    # masked card
-    d.text((692, 348), H['out_label'], font=font(20, 'cjk_bold'),
-           fill=hx(s['accent2']))
+    d.polygon([(ax - 10, 304), (ax + 10, 304), (ax, 320)], fill=hx(s['accent']))
+    d.text((692, 348), H['out_label'], font=font(20, 'cjk_bold'), fill=hx(s['accent2']))
     for i, ln in enumerate(H['out_text']):
-        d.text((692, 392 + i * 32), ln, font=font(21, 'cjk'),
-               fill=hx(s['text']))
+        d.text((692, 392 + i * 32), ln, font=font(21, 'cjk'), fill=hx(s['text']))
     d.text((692, 462), H['tag_out'], font=font(16, 'cjk'), fill=hx(s['faint']))
-    # restore card
-    d.text((1112, 348), H['restore'][0], font=font(20, 'cjk_bold'),
-           fill=hx(s['accent']))
+    d.text((1112, 348), H['restore'][0], font=font(20, 'cjk_bold'), fill=hx(s['accent']))
     for i, ln in enumerate(H['restore'][1:]):
         d.text((1112, 392 + i * 26), ln, font=font(16, 'en'),
                fill=hx(s['sub'] if i == 0 else s['faint']))
     d.line([1112, 452, 1348, 452], fill=hx(s['grid']), width=2)
     d.text((1112, 468), 'reversible /mask restore', font=font(15, 'mono'),
            fill=hx(s['accent']))
-    img.save(os.path.join(OUT, f'hero-{lang}-{skin}-v3.webp'), 'WEBP',
-             quality=92)
+    img.save(os.path.join(OUT, f'hero-{lang}-{skin}-v3.webp'), 'WEBP', quality=92)
     print(f'hero-{lang}-{skin}-v3.webp')
 
 
@@ -244,16 +229,14 @@ def evidence(lang, skin):
     s = SKIN[skin]
     w, h = 1440, 576
     img = gradient(w, h, s['bg_from'], s['bg_to'])
-    img = glow(img, 1300, 480, 320, hx(s['accent']),
-               20 if skin == 'light' else 30)
+    img = glow(img, 1300, 480, 320, hx(s['accent']), 20 if skin == 'light' else 30)
     d = ImageDraw.Draw(img)
     E = EV[lang]
     m = 60
     d.text((m, 46), E['title'], font=font(42, 'cjk_bold'), fill=hx(s['text']))
     d.text((m, 100), E['sub'], font=font(19, 'cjk'), fill=hx(s['sub']))
     d.text((1020, 24), E['big'], font=font(92, 'en_bold'), fill=hx(s['accent']))
-    d.text((1024, 118), E['big_label'], font=font(19, 'en_bold'),
-           fill=hx(s['sub']))
+    d.text((1024, 118), E['big_label'], font=font(19, 'en_bold'), fill=hx(s['sub']))
     d.text((1024, 142), E['tag'], font=font(16, 'cjk'), fill=hx(s['accent2']))
     label_w, bar_max = 170, 620
     bar_x = m + label_w + 20
@@ -261,17 +244,14 @@ def evidence(lang, skin):
     for i, (name, val) in enumerate(F1):
         y = top + i * row
         d.text((m, y + 1), name, font=font(22, 'en'), fill=hx(s['text']))
-        d.rounded_rectangle([bar_x, y, bar_x + bar_max, y + bh], radius=15,
-                            fill=hx(s['grid']))
+        d.rounded_rectangle([bar_x, y, bar_x + bar_max, y + bh], radius=15, fill=hx(s['grid']))
         fillw = int(bar_max * val)
         color = s['accent2'] if val >= 0.999 else s['warn']
-        d.rounded_rectangle([bar_x, y, bar_x + fillw, y + bh], radius=15,
-                            fill=hx(color))
-        d.rounded_rectangle([bar_x + 5, y + 4, bar_x + max(fillw - 5, 10),
-                             y + 13], radius=5,
-                            fill=tuple(min(255, c + 34) for c in hx(color)))
-        d.text((bar_x + bar_max + 20, y - 2), f'{val:.3f}',
-               font=font(22, 'en_bold'), fill=hx(s['text']))
+        d.rounded_rectangle([bar_x, y, bar_x + fillw, y + bh], radius=15, fill=hx(color))
+        d.rounded_rectangle([bar_x + 5, y + 4, bar_x + max(fillw - 5, 10), y + 13],
+                            radius=5, fill=tuple(min(255, c + 34) for c in hx(color)))
+        d.text((bar_x + bar_max + 20, y - 2), f'{val:.3f}', font=font(22, 'en_bold'),
+               fill=hx(s['text']))
     d.line([m, 486, w - m, 486], fill=hx(s['grid']), width=2)
     d.text((m, 500), E['note'], font=font(19, 'cjk'), fill=hx(s['sub']))
     d.text((m, 532), E['note2'], font=font(18, 'cjk'), fill=hx(s['faint']))
@@ -280,79 +260,100 @@ def evidence(lang, skin):
     print(f'dsh-mask-evidence-v3-{lang}-{skin}.webp')
 
 
-FLOW = {
-    'light': dict(bg='#ffffff', card='#fcfcfe', edge='#e6e3f0', text='#141419',
-                  sub='#4d5261', accent='#4B67B4', accent2='#16a34a',
-                  grid='#f2f0f8', pill='#ece7f9'),
-    'dark': dict(bg='#0d1117', card='#161b26', edge='#2a3142', text='#f0f3f9',
-                 sub='#a8b1c4', accent='#8496f5', accent2='#3fb950',
-                 grid='#182031', pill='#242d42'),
-}
+FLOW = {'light': dict(bg='#ffffff', zone='#f7f5fc', card='#ffffff',
+                      edge='#e6e3f0', text='#141419', sub='#4d5261',
+                      accent='#4B67B4', accent2='#16a34a', grid='#f2f0f8',
+                      pill='#ece7f9', faint='#8f94a4'),
+        'dark': dict(bg='#0d1117', zone='#121824', card='#161b26', edge='#2a3142',
+                     text='#f0f3f9', sub='#a8b1c4', accent='#8496f5',
+                     accent2='#3fb950', grid='#182031', pill='#242d42',
+                     faint='#737b8d')}
 
 
 def flow_svg(skin):
+    """Two zones split by the model boundary + a restore loop back."""
     s = FLOW[skin]
     W, H = 1100, 660
-    nodes = [('01', 'user message', 'plaintext enters', 50),
-             ('02', 'agent/pre-step', '-> <PHONE_1>', 256),
-             ('03', 'model', 'placeholder-only', 462),
-             ('04', '/mask restore', 'explicit reveal', 668),
-             ('05', 'controlled file', '0600 per session', 898)]
-    nw, nh, y0 = 176, 118, 190
     solid = "0.10" if skin == 'light' else "0.55"
-    p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="dsh-mask data flow">
+    p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="dsh-mask two-zone diagram: host side and model side split by the model boundary, with the restore loop">
 <defs>
-  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="{s['accent']}" stop-opacity=".15"/>
-    <stop offset=".5" stop-color="{s['accent']}" stop-opacity=".9"/>
-    <stop offset="1" stop-color="{s['accent']}" stop-opacity=".15"/>
-  </linearGradient>
   <filter id="soft" x="-40%" y="-40%" width="180%" height="200%">
     <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1b1735" flood-opacity="{solid}"/>
   </filter>
   <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
     <circle cx="1.3" cy="1.3" r="1.3" fill="{s['grid']}"/>
   </pattern>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="{s['accent']}"/>
+  </marker>
+  <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="{s['accent2']}"/>
+  </marker>
 </defs>
 <rect width="{W}" height="{H}" fill="{s['bg']}"/>
 <rect width="{W}" height="{H}" fill="url(#dots)" opacity=".5"/>
-<text x="50" y="62" fill="{s['text']}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-mask</text>
-<text x="50" y="90" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">data flow · masking at the model boundary · restore table stays host-side</text>
-<rect x="50" y="108" width="1000" height="1.6" rx="1" fill="{s['edge']}"/>''']
-    for i, (num, title, sub, x) in enumerate(nodes):
-        accent = s['accent2'] if i == 4 else (s['accent'] if i == 1 else s['edge'])
-        stroke = 2.6 if i in (1, 4) else 1.3
-        p.append(f'''<g filter="url(#soft)">
-  <rect x="{x}" y="{y0}" width="{nw}" height="{nh}" rx="17" fill="{s['card']}" stroke="{accent}" stroke-width="{stroke}"/>
+<text x="50" y="58" fill="{s['text']}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-mask</text>
+<text x="50" y="86" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">the model boundary is the whole design: mask on this side, placeholders on the other</text>
+
+<!-- zone backgrounds -->
+<rect x="42" y="112" width="520" height="470" rx="22" fill="{s['zone']}" stroke="{s['edge']}"/>
+<rect x="600" y="112" width="458" height="470" rx="22" fill="{s['zone']}" stroke="{s['edge']}"/>
+<text x="66" y="142" fill="{s['accent']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700">YOUR MACHINE</text>
+<text x="624" y="142" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700">WHAT THE MODEL SEES</text>
+
+<!-- boundary -->
+<line x1="581" y1="112" x2="581" y2="582" stroke="{s['accent']}" stroke-width="2" stroke-dasharray="7 7" opacity=".75"/>
+<g transform="translate(581 352) rotate(-90)">
+  <text x="0" y="0" text-anchor="middle" fill="{s['accent']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12.5" font-weight="700" letter-spacing="2">MODEL BOUNDARY</text>
 </g>
-<circle cx="{x + 24}" cy="{y0 + 24}" r="12" fill="{s['pill']}"/>
-<text x="{x + 24}" y="{y0 + 29}" text-anchor="middle" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="11.5" font-weight="700">{num}</text>
-<text x="{x + nw / 2}" y="{y0 + 66}" text-anchor="middle" fill="{s['text']}" font-family="ui-monospace, monospace" font-size="16" font-weight="700">{escape(title)}</text>
-<text x="{x + nw / 2}" y="{y0 + 92}" text-anchor="middle" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">{escape(sub)}</text>''')
-        if i < len(nodes) - 1:
-            x0, x1 = x + nw + 5, nodes[i + 1][3] - 5
-            mid, yy = (x0 + x1) / 2, y0 + nh / 2
-            p.append(f'''<path d="M{x0} {yy} C{mid} {yy}, {mid} {yy}, {x1} {yy}" stroke="url(#lineGrad)" stroke-width="2.2" fill="none"/>
-<path d="M{x1 - 10} {yy - 5} l8 5 -8 5" fill="none" stroke="{s['accent']}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>''')
-    bx, by, bw = 256, 378, 588
-    p.append(f'''<path d="M344 {y0 + nh} V{by}" stroke="{s['accent']}" stroke-width="1.7" stroke-dasharray="5 6" opacity=".75"/>
-<path d="M756 {y0 + nh} V{by}" stroke="{s['accent']}" stroke-width="1.7" stroke-dasharray="5 6" opacity=".75"/>
+
+<!-- host side cards -->
 <g filter="url(#soft)">
-  <rect x="{bx}" y="{by}" width="{bw}" height="58" rx="15" fill="{s['pill']}" stroke="{s['accent']}" stroke-width="1.3"/>
+  <rect x="66" y="164" width="472" height="118" rx="16" fill="{s['card']}" stroke="{s['edge']}"/>
 </g>
-<text x="{bx + 24}" y="{by + 25}" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">restore table</text>
-<text x="{bx + 24}" y="{by + 44}" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">memory + dsh_mask storage domain · never the session log</text>
-<rect x="50" y="476" width="1000" height="58" rx="15" fill="{s['card']}" stroke="{s['edge']}"/>
-<text x="74" y="502" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">mask/applied</text>
-<text x="74" y="522" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">session event = counts + type distribution only · the plaintext never enters the log</text>
-<circle cx="994" cy="506" r="4.5" fill="{s['accent2']}"/>
-<text x="1006" y="511" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">audit</text>
-<text x="50" y="596" fill="{s['sub']}" font-family="ui-monospace, monospace" font-size="13">Apache-2.0 · PerryLink DSH plugin family</text>
-</svg>''')
-    with open(os.path.join(OUT, f'dsh-mask-flow-v3-{skin}.svg'), 'w',
+<text x="86" y="190" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">user message</text>
+<text x="86" y="220" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">帮我核对下：电话 13812345678，</text>
+<text x="86" y="246" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">邮箱 zhang@example.com</text>
+<text x="86" y="270" fill="{s['faint']}" font-family="ui-monospace, monospace" font-size="12">plaintext stays on this side</text>
+
+<g filter="url(#soft)">
+  <rect x="66" y="304" width="472" height="112" rx="16" fill="{s['card']}" stroke="{s['accent']}" stroke-width="2.2"/>
+</g>
+<text x="86" y="330" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">agent/pre-step · mask</text>
+<text x="86" y="362" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">电话 &lt;PHONE_1&gt;，邮箱 &lt;EMAIL_1&gt;</text>
+<text x="86" y="392" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">rewrite happens here, before the log</text>
+
+<g filter="url(#soft)">
+  <rect x="66" y="438" width="472" height="118" rx="16" fill="{s['card']}" stroke="{s['edge']}"/>
+</g>
+<text x="86" y="464" fill="{s['accent']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">restore table</text>
+<text x="86" y="494" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">memory + dsh_mask domain</text>
+<text x="86" y="520" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">/mask restore → a 0600 file, one per session</text>
+<text x="86" y="542" fill="{s['faint']}" font-family="ui-monospace, monospace" font-size="12">never the session log</text>
+
+<!-- arrows: message -> mask -> (boundary) model -->
+<line x1="302" y1="282" x2="302" y2="302" stroke="{s['accent']}" stroke-width="2.4" marker-end="url(#arr)"/>
+<line x1="538" y1="360" x2="640" y2="360" stroke="{s['accent']}" stroke-width="2.4" marker-end="url(#arr)"/>
+
+<!-- model side cards -->
+<g filter="url(#soft)">
+  <rect x="618" y="196" width="422" height="160" rx="16" fill="{s['card']}" stroke="{s['accent2']}" stroke-width="2.2"/>
+</g>
+<text x="638" y="226" fill="{s['accent2']}" font-family="ui-monospace, monospace" font-size="13" font-weight="700">model</text>
+<text x="638" y="260" fill="{s['text']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">电话 &lt;PHONE_1&gt;，邮箱 &lt;EMAIL_1&gt;</text>
+<text x="638" y="292" fill="{s['sub']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">placeholder-only · reversible by the host</text>
+<text x="638" y="322" fill="{s['faint']}" font-family="ui-monospace, monospace" font-size="12">mask/applied = counts + types, no plaintext</text>
+
+<!-- restore loop back to host -->
+<path d="M830 356 C830 470, 680 500, 552 492" stroke="{s['accent2']}" stroke-width="2.2" fill="none" stroke-dasharray="6 6" marker-end="url(#arr2)"/>
+<text x="620" y="452" fill="{s['accent2']}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">explicit restore</text>
+
+<text x="50" y="622" fill="{s['sub']}" font-family="ui-monospace, monospace" font-size="13">Apache-2.0 · PerryLink DSH plugin family</text>
+</svg>''']
+    with open(os.path.join(OUT, f'dsh-mask-flow-v4-{skin}.svg'), 'w',
               encoding='utf-8', newline='\n') as fh:
         fh.write('\n'.join(p) + '\n')
-    print(f'dsh-mask-flow-v3-{skin}.svg')
+    print(f'dsh-mask-flow-v4-{skin}.svg')
 
 
 def main():

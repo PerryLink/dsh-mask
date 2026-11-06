@@ -39,8 +39,8 @@ dsh plugin --profile <name> add dsh-mask
 किसी संदेश के मॉडल तक पहुँचने से पहले, `dsh-mask` उसमें मौजूद फ़ोन, ईमेल, आईडी कार्ड, बैंक कार्ड और कुंजियों को `<PHONE_1>` जैसे प्लेसहोल्डर में बदल देता है — मॉडल जो देखता है और सत्र लॉग जो दर्ज करता है, वह केवल प्लेसहोल्डर होते हैं। मूल पाठ केवल host-side पुनर्स्थापना तालिका (मेमोरी और नियंत्रित `dsh_mask` स्टोरेज डोमेन) में रहता है, और स्पष्ट `/mask restore` कॉल उसे `0600` अनुमति वाली फ़ाइल के रूप में वापस सौंपता है जिसका पथ — मूल पाठ कभी नहीं — ही लॉग होता है। शुद्ध regex, शून्य निर्भरता, कोई नेटवर्क अनुरोध नहीं।
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v3-dark.svg">
-  <img src="docs/assets/dsh-mask-flow-v3-light.svg" width="100%" alt="dsh-mask डेटा प्रवाह: उपयोगकर्ता संदेश → agent/pre-step मास्किंग → मॉडल → /mask restore → नियंत्रित फ़ाइल">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v4-dark.svg">
+  <img src="docs/assets/dsh-mask-flow-v4-light.svg" width="100%" alt="dsh-mask डेटा प्रवाह: उपयोगकर्ता संदेश → agent/pre-step मास्किंग → मॉडल → /mask restore → नियंत्रित फ़ाइल">
 </picture>
 
 ## तीन चरणों में शुरुआत

@@ -39,8 +39,8 @@ dsh plugin --profile <name> add dsh-mask
 Before a message reaches the model, `dsh-mask` rewrites the phones, emails, ID cards, bank cards, and keys inside it into placeholders such as `<PHONE_1>` — what the model sees and what the session log records are placeholders only. The originals live solely in the host-side restore table (memory plus the controlled `dsh_mask` storage domain), and an explicit `/mask restore` call delivers them back as a `0600`-permission file whose path — never the plaintext — is what gets logged. Pure regex, zero dependencies, no network requests.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v3-dark.svg">
-  <img src="docs/assets/dsh-mask-flow-v3-light.svg" width="100%" alt="dsh-mask data flow: user message → agent/pre-step masking → model → /mask restore → controlled file">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-flow-v4-dark.svg">
+  <img src="docs/assets/dsh-mask-flow-v4-light.svg" width="100%" alt="dsh-mask data flow: user message → agent/pre-step masking → model → /mask restore → controlled file">
 </picture>
 
 ## Three-step setup

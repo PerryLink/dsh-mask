@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-mask two-zone diagram: host side and model side split by the model boundary, with the restore loop">
+<defs>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="200%">
+    <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1b1735" flood-opacity="0.55"/>
+  </filter>
+  <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+    <circle cx="1.3" cy="1.3" r="1.3" fill="#182031"/>
+  </pattern>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="#8496f5"/>
+  </marker>
+  <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/>
+  </marker>
+</defs>
+<rect width="1100" height="660" fill="#0d1117"/>
+<rect width="1100" height="660" fill="url(#dots)" opacity=".5"/>
+<text x="50" y="58" fill="#f0f3f9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="32" font-weight="700">dsh-mask</text>
+<text x="50" y="86" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16">the model boundary is the whole design: mask on this side, placeholders on the other</text>
+
+<!-- zone backgrounds -->
+<rect x="42" y="112" width="520" height="470" rx="22" fill="#121824" stroke="#2a3142"/>
+<rect x="600" y="112" width="458" height="470" rx="22" fill="#121824" stroke="#2a3142"/>
+<text x="66" y="142" fill="#8496f5" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700">YOUR MACHINE</text>
+<text x="624" y="142" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700">WHAT THE MODEL SEES</text>
+
+<!-- boundary -->
+<line x1="581" y1="112" x2="581" y2="582" stroke="#8496f5" stroke-width="2" stroke-dasharray="7 7" opacity=".75"/>
+<g transform="translate(581 352) rotate(-90)">
+  <text x="0" y="0" text-anchor="middle" fill="#8496f5" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12.5" font-weight="700" letter-spacing="2">MODEL BOUNDARY</text>
+</g>
+
+<!-- host side cards -->
+<g filter="url(#soft)">
+  <rect x="66" y="164" width="472" height="118" rx="16" fill="#161b26" stroke="#2a3142"/>
+</g>
+<text x="86" y="190" fill="#8496f5" font-family="ui-monospace, monospace" font-size="13" font-weight="700">user message</text>
+<text x="86" y="220" fill="#f0f3f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">帮我核对下：电话 13812345678，</text>
+<text x="86" y="246" fill="#f0f3f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">邮箱 zhang@example.com</text>
+<text x="86" y="270" fill="#737b8d" font-family="ui-monospace, monospace" font-size="12">plaintext stays on this side</text>
+
+<g filter="url(#soft)">
+  <rect x="66" y="304" width="472" height="112" rx="16" fill="#161b26" stroke="#8496f5" stroke-width="2.2"/>
+</g>
+<text x="86" y="330" fill="#8496f5" font-family="ui-monospace, monospace" font-size="13" font-weight="700">agent/pre-step · mask</text>
+<text x="86" y="362" fill="#f0f3f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">电话 &lt;PHONE_1&gt;，邮箱 &lt;EMAIL_1&gt;</text>
+<text x="86" y="392" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">rewrite happens here, before the log</text>
+
+<g filter="url(#soft)">
+  <rect x="66" y="438" width="472" height="118" rx="16" fill="#161b26" stroke="#2a3142"/>
+</g>
+<text x="86" y="464" fill="#8496f5" font-family="ui-monospace, monospace" font-size="13" font-weight="700">restore table</text>
+<text x="86" y="494" fill="#f0f3f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">memory + dsh_mask domain</text>
+<text x="86" y="520" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">/mask restore → a 0600 file, one per session</text>
+<text x="86" y="542" fill="#737b8d" font-family="ui-monospace, monospace" font-size="12">never the session log</text>
+
+<!-- arrows: message -> mask -> (boundary) model -->
+<line x1="302" y1="282" x2="302" y2="302" stroke="#8496f5" stroke-width="2.4" marker-end="url(#arr)"/>
+<line x1="538" y1="360" x2="640" y2="360" stroke="#8496f5" stroke-width="2.4" marker-end="url(#arr)"/>
+
+<!-- model side cards -->
+<g filter="url(#soft)">
+  <rect x="618" y="196" width="422" height="160" rx="16" fill="#161b26" stroke="#3fb950" stroke-width="2.2"/>
+</g>
+<text x="638" y="226" fill="#3fb950" font-family="ui-monospace, monospace" font-size="13" font-weight="700">model</text>
+<text x="638" y="260" fill="#f0f3f9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="17">电话 &lt;PHONE_1&gt;，邮箱 &lt;EMAIL_1&gt;</text>
+<text x="638" y="292" fill="#a8b1c4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13">placeholder-only · reversible by the host</text>
+<text x="638" y="322" fill="#737b8d" font-family="ui-monospace, monospace" font-size="12">mask/applied = counts + types, no plaintext</text>
+
+<!-- restore loop back to host -->
+<path d="M830 356 C830 470, 680 500, 552 492" stroke="#3fb950" stroke-width="2.2" fill="none" stroke-dasharray="6 6" marker-end="url(#arr2)"/>
+<text x="620" y="452" fill="#3fb950" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">explicit restore</text>
+
+<text x="50" y="622" fill="#a8b1c4" font-family="ui-monospace, monospace" font-size="13">Apache-2.0 · PerryLink DSH plugin family</text>
+</svg>
