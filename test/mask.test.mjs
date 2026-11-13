@@ -2,7 +2,7 @@
 
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { maskMessage, maskMessages } from '../lib/mask.mjs'
+import { maskMessage, maskMessages, maskContentBlocks } from '../lib/mask.mjs'
 import { createStripper } from '../lib/strip.mjs'
 
 function stripper() {
@@ -44,6 +44,63 @@ test('maskMessages totals replacements across messages', () => {
   assert.equal(masked.length, 2)
   assert.ok(!masked[0].content[0].text.includes('13812345678'))
   assert.ok(!masked[1].content[0].text.includes('a@b.com'))
+})
+
+test('maskMessage masks reasoning blocks in place, keeping type and order', () => {
+  const s = stripper()
+  const message = {
+    content: [
+      { type: 'reasoning', text: '用户手机 13812345678，密钥 sk-abcdefghijklmnopqrstuvwx' },
+      { type: 'tool-call', id: 'call_1', name: 'noop', arguments: '{}' },
+    ],
+    source: { kind: 'user' },
+  }
+  const { message: masked, replaced } = maskMessage(message, s)
+  assert.equal(replaced, 2)
+  assert.deepEqual(masked.content.map(block => block.type), ['reasoning', 'tool-call'])
+  assert.equal(masked.source.kind, 'user')
+  assert.ok(!masked.content[0].text.includes('13812345678'))
+  assert.ok(!masked.content[0].text.includes('sk-abcdefghijklmnopqrstuvwx'))
+  assert.equal(masked.content[1], message.content[1]) // 非文本块原样保留。
+})
+
+test('maskMessage reasoning blocks are reversible through restore()', () => {
+  const s = stripper()
+  const original = '我的邮箱 a@b.com，手机号 13812345678'
+  const message = { content: [{ type: 'reasoning', text: original }] }
+  const { message: masked } = maskMessage(message, s)
+  assert.notEqual(masked.content[0].text, original)
+  assert.equal(masked.content[0].type, 'reasoning')
+  assert.equal(s.restore(masked.content[0].text), original)
+})
+
+test('maskMessage masks text and reasoning in the same mixed message', () => {
+  const s = stripper()
+  const content = [
+    { type: 'text', text: '联系 a@b.com' },
+    { type: 'image', url: 'http://x' },
+    { type: 'reasoning', text: '手机 13812345678' },
+  ]
+  const { message: masked, replaced } = maskMessage({ content }, s)
+  assert.equal(replaced, 2)
+  assert.deepEqual(masked.content.map(block => block.type), ['text', 'image', 'reasoning'])
+  assert.equal(masked.content[1], content[1])
+  assert.ok(!masked.content[0].text.includes('a@b.com'))
+  assert.ok(!masked.content[2].text.includes('13812345678'))
+  assert.equal(s.restore(masked.content[0].text), '联系 a@b.com')
+  assert.equal(s.restore(masked.content[2].text), '手机 13812345678')
+})
+
+test('maskContentBlocks masks reasoning text too', () => {
+  const s = stripper()
+  const { blocks: masked, replaced } = maskContentBlocks(
+    [{ type: 'reasoning', text: '手机 13812345678' }],
+    s,
+  )
+  assert.equal(replaced, 1)
+  assert.equal(masked[0].type, 'reasoning')
+  assert.ok(!masked[0].text.includes('13812345678'))
+  assert.equal(s.restore(masked[0].text), '手机 13812345678')
 })
 
 test('maskMessage tolerates malformed messages', () => {
