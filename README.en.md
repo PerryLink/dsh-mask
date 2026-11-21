@@ -121,6 +121,10 @@ user message ──agent/pre-step──▶ placeholders ──model──▶ pla
 
 ### Examples
 
+![dsh-mask: real terminal run](docs/assets/dsh-mask-demo.gif)
+
+*Animated replay of a real run recorded in this repository.*
+
 These are the plugin's real entry points; install once, then call one.
 
 **Detailed example** — command `mask_test`, input:

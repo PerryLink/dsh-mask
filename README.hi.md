@@ -43,6 +43,11 @@ dsh plugin --profile <name> add dsh-mask
   <img src="docs/assets/dsh-mask-flow-v4-light.svg" width="100%" alt="dsh-mask डेटा प्रवाह: उपयोगकर्ता संदेश → agent/pre-step मास्किंग → मॉडल → /mask restore → नियंत्रित फ़ाइल">
 </picture>
 
+![dsh-mask का असली टर्मिनल रन](docs/assets/dsh-mask-demo.gif)
+
+*इस रिपॉज़िटरी में दर्ज असली रन का एनिमेटेड रीप्ले।*
+
+
 ## तीन चरणों में शुरुआत
 
 1. **इंस्टॉल करें** (एक चैनल चुनें):

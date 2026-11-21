@@ -43,6 +43,11 @@ Antes que uma mensagem chegue ao modelo, o `dsh-mask` reescreve os telefones, e-
   <img src="docs/assets/dsh-mask-flow-v4-light.svg" width="100%" alt="Fluxo de dados do dsh-mask: mensagem do usuário → mascaramento em agent/pre-step → modelo → /mask restore → arquivo controlado">
 </picture>
 
+![dsh-mask: execução real de terminal](docs/assets/dsh-mask-demo.gif)
+
+*Repetição animada de uma execução real registrada neste repositório.*
+
+
 ## Instalação em três passos
 
 1. **Instale** (escolha um canal):

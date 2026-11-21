@@ -36,6 +36,10 @@ dsh plugin --profile <name> add dsh-mask
 
 ## 它是什么
 
+![dsh-mask 真实终端运行](docs/assets/dsh-mask-demo.gif)
+
+*本仓库一次真实运行的动图回放。*
+
 发消息给模型之前，`dsh-mask` 先把里面的电话、邮箱、身份证、银行卡、密钥换成 `<PHONE_1>` 这样的占位符——模型看到的、会话日志记下的，都只有占位符。真正的原文只存在主机侧的恢复表里（内存 + 受控的 `dsh_mask` 存储域），随时可以调用 `/mask restore` 显式取回：原文以 `0600` 权限的文件交付，路径才进日志。纯正则、零依赖、无网络请求。
 
 <picture>
