@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-zh-dark-v3.webp">
-  <img src="docs/assets/hero-zh-light-v3.webp" width="100%" alt="dsh-mask：在个人数据抵达模型之前完成脱敏，原文永不进入会话日志">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-hero-zh-dark-v3.webp">
+  <img src="docs/assets/dsh-mask-hero-zh-light-v3.webp" width="100%" alt="dsh-mask：在个人数据抵达模型之前完成脱敏，原文永不进入会话日志">
 </picture>
 
 # dsh-mask

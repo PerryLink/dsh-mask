@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-en-dark-v3.webp">
-  <img src="docs/assets/hero-en-light-v3.webp" width="100%" alt="dsh-mask: anonimize os dados pessoais antes que cheguem ao modelo; o texto simples nunca entra no registro de sessão">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-hero-en-dark-v3.webp">
+  <img src="docs/assets/dsh-mask-hero-en-light-v3.webp" width="100%" alt="dsh-mask: anonimize os dados pessoais antes que cheguem ao modelo; o texto simples nunca entra no registro de sessão">
 </picture>
 
 # dsh-mask

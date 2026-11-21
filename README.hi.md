@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-en-dark-v3.webp">
-  <img src="docs/assets/hero-en-light-v3.webp" width="100%" alt="dsh-mask: व्यक्तिगत डेटा को मॉडल तक पहुँचने से पहले अनाम करें — मूल पाठ सत्र लॉग में कभी नहीं जाता">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-mask-hero-en-dark-v3.webp">
+  <img src="docs/assets/dsh-mask-hero-en-light-v3.webp" width="100%" alt="dsh-mask: व्यक्तिगत डेटा को मॉडल तक पहुँचने से पहले अनाम करें — मूल पाठ सत्र लॉग में कभी नहीं जाता">
 </picture>
 
 # dsh-mask
