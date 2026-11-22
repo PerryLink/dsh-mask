@@ -11,6 +11,8 @@
 
 DeepSeek Harness के लिए शुद्ध host-side PII मास्किंग मिडलवेयर: फ़ोन, ईमेल, आईडी कार्ड, बैंक कार्ड और कुंजियाँ मॉडल सीमा पर प्लेसहोल्डर बन जाते हैं, और पुनर्स्थापना तालिका आपकी अपनी मशीन पर रहती है।
 
+अंतिम सत्यापन: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
+
 [इंस्टॉल](#तीन-चरणों-में-शुरुआत) · [कॉन्फ़िगरेशन](#कॉन्फ़िगरेशन) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
@@ -46,7 +48,6 @@ dsh plugin --profile <name> add dsh-mask
 ![dsh-mask का असली टर्मिनल रन](docs/assets/dsh-mask-demo.gif)
 
 *इस रिपॉज़िटरी में दर्ज असली रन का एनिमेटेड रीप्ले।*
-
 
 ## तीन चरणों में शुरुआत
 
