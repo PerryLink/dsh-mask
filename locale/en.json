@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Mask",
+    "description": "Anonymize personal data before it reaches the model — the plaintext never enters your session log."
+  }
+}

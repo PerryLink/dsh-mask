@@ -7,6 +7,8 @@
 
 # dsh-mask
 
+Current version `0.2.28`.
+
 **Anonymize personal data before it reaches the model — the plaintext never enters your session log.**
 
 A pure host-side PII masking middleware for DeepSeek Harness: phones, emails, ID cards, bank cards, and keys become placeholders at the model boundary, and the restore table stays on your own machine.
